@@ -209,6 +209,17 @@ button.chip { cursor: pointer; background: transparent; }
 .stat .foot input { width: 28px; border: 0; border-bottom: 1px solid var(--rule); background: transparent; text-align: center; font-family: var(--entry); font-size: 13px; color: var(--ink); }
 .stat .foot .iniRoll { font-family: var(--entry); font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--accent); background: none; border: 0; padding: 2px 6px; cursor: pointer; }
 .stat .foot .iniRoll:hover { text-decoration: underline; }
+.stlist { display: grid; gap: 6px; }
+.stlist .stgrp { font-family: var(--display); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+.stlist .strow { display: flex; flex-wrap: wrap; gap: 5px; }
+.stchip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px 3px 3px; border-radius: 14px; border: 1px solid var(--hair); background: transparent; color: var(--muted);
+  font-family: var(--entry); font-size: 12.5px; cursor: pointer; }
+.stchip img { width: 20px; height: 20px; opacity: .45; filter: grayscale(1); }
+.stchip small { font-size: 10px; opacity: .8; }
+.stchip.on { color: var(--ink); border-color: var(--rule); background: var(--soft); font-weight: 600; }
+.stchip.on img { opacity: 1; filter: none; }
+.credit { font-family: var(--entry); font-size: 10.5px; color: var(--muted); margin: 6px 0 0; }
+.credit a { color: inherit; }
 .stat input[type=number], .bigbox input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .stat input[type=number]::-webkit-inner-spin-button, .stat input[type=number]::-webkit-outer-spin-button,
 .bigbox input[type=number]::-webkit-inner-spin-button, .bigbox input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -575,6 +586,9 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
       <h2>Concentration <button type="button" class="ti" data-tip="Offensive spells cost your Action each turn to hold; Defensive spells cost your Minor Action. Holding takes a hand and halves your Speed. Two held spells must use different bands." aria-label="About Concentration">i</button><span class="grow"></span></h2>
       <div class="conc" id="concList"></div>
       <div class="warnline" id="concWarn"></div>
+      <h2 class="gap">Boons &amp; Curses <button type="button" class="ti" data-tip="&lt;p&gt;Tap a status to turn it on or off. Active ones show as icons on your linked token and on your Party card.&lt;/p&gt;&lt;p&gt;A curse lands when a Hit (not a Graze) also meets your &lt;b&gt;Resistance&lt;/b&gt; (10 + your points in the listed trait). Default duration: until the end of your next turn. The same status doesn't stack.&lt;/p&gt;" aria-label="About Boons and Curses">i</button><span class="grow"></span><button type="button" class="small" id="btnStatusClear">Clear all</button></h2>
+      <div class="stlist" id="statusList"></div>
+      <p class="credit">Icons by Lorc, Delapouite and contributors, <a href="https://game-icons.net" target="_blank" rel="noopener">game-icons.net</a> (CC BY 3.0).</p>
       <h2 class="gap">Daily Affinities <button type="button" class="ti" data-tip="One free use per day, refreshed at dawn. Extra uses cost an Agathós Daemon." aria-label="About Daily Affinities">i</button><span class="grow"></span></h2>
       <div class="daily" id="dailyList"></div>
       <div class="rowbtns"><button type="button" id="btnDawn">Dawn (refresh Daily)</button></div>
@@ -1357,6 +1371,7 @@ function renderBio(){ $("bioRibbon").textContent = (cur.name||"Character Name").
 function renderDerived(){ const d = derive(cur); renderTriangle(d); renderStats(d); renderSig(); }
 $("sigSel").onchange = e => { cur.signature = e.target.value; renderDerived(); renderAttack(); scheduleSave(); };
 function renderAll(){
+  try { renderStatus(); } catch(_){}
   if (!cur) return;
   syncForms();
   renderPicker(); renderFields(); renderDerived(); renderAff(); renderCombat(); renderWeapons(); renderSpells(); renderBio();
@@ -1452,6 +1467,42 @@ $("btnNextRound").onclick = () => { cur.combat.riposte = false;
   concNote = ended.join(" ");
   renderCombat(); scheduleSave();
 };
+// ---------- Boons & Curses (Appendix 3) ----------
+const STATUSES = [
+  ["Regenerating","boon","","Regain 1d4 HP at the start of each of your turns, for 3 turns"],
+  ["Shielded","boon","","Extra HP set by the source, lost before your own HP"],
+  ["Nimble","boon","","Move away from enemies without giving them a Reaction"],
+  ["Bleeding","curse","End","Lose 1d4 HP at the start of each turn, for 3 turns"],
+  ["Burning","curse","End","Take 1d6 fire damage at the start of each turn, for 2 turns. A Minor Action or water puts it out"],
+  ["Poisoned","curse","End","Lose 1d4 HP at the start of each turn until cured"],
+  ["Stunned","curse","End","Lose your next Action"],
+  ["Frail","curse","End","Take +2 damage from every hit"],
+  ["Slowed","curse","Str","Movement costs double (half Speed)"],
+  ["Bound","curse","Agi","Can't move or fly"],
+  ["Prone","curse","Agi","Knocked down; standing up costs half your movement. Flying creatures fall"],
+  ["Blinded","curse","Per","Hit rolls get no trait bonus"],
+  ["Deafened","curse","Per","Can't hear"],
+  ["Silenced","curse","Pwr","Can't cast spells or use active Affinities"],
+  ["Charmed","curse","Wit","Under the source's influence, as the source describes"],
+  ["Amnesia","curse","Rsn","Can't use active Affinities or spells; an Aegis forgets all but its first weapon form"],
+  ["Doomed","curse","Int","Dissipates when the source's time runs out, unless dispelled"]
+];
+function statusList(c){ c = c || cur; if (!Array.isArray(c.status)) c.status = []; return c.status; }
+function renderStatus(){
+  const on = new Set(statusList());
+  const chip = ([nm, kind, res, fx]) => `<button type="button" class="stchip${on.has(nm)?" on":""}" data-st="${nm}" title="${esc(nm)}${res?` (resist: ${res})`:""}: ${esc(fx)}" aria-pressed="${on.has(nm)}"><img src="status/${nm.toLowerCase()}.svg" alt="">${nm}${res?` <small>${res}</small>`:""}</button>`;
+  $("statusList").innerHTML = `<div class="stgrp">Boons</div><div class="strow">${STATUSES.filter(x=>x[1]==="boon").map(chip).join("")}</div>
+    <div class="stgrp">Curses</div><div class="strow">${STATUSES.filter(x=>x[1]==="curse").map(chip).join("")}</div>`;
+}
+$("statusList").addEventListener("click", e => {
+  const b = e.target.closest("[data-st]"); if (!b || !cur) return;
+  const nm = b.dataset.st, list = statusList(), i = list.indexOf(nm), def = STATUSES.find(x => x[0] === nm);
+  if (i >= 0) list.splice(i, 1); else list.push(nm);
+  logEntry(i >= 0 ? "" : (def[1] === "boon" ? "hit" : "miss"), `${nm} ${i >= 0 ? "ends" : (def[1] === "boon" ? "(boon)" : "(curse)")}`, [i >= 0 ? `No longer ${nm}.` : esc(def[3]) + "."]);
+  renderStatus(); scheduleSave();
+});
+$("btnStatusClear").onclick = () => { if (!cur || !statusList().length) return; const was = statusList().slice(); cur.status = []; logEntry("", "Statuses cleared", [`Ended: ${was.join(", ")}.`]); renderStatus(); scheduleSave(); };
+
 function rollInitiative(){
   if (!cur) return;
   const mod = derive(cur).ini, nat = die(20), total = nat + mod;
@@ -2338,13 +2389,14 @@ function partySnapshot(c){
       conc: (c.combat.conc || []).filter(x => x.spell && x.spell.trim()).map(x => x.spell),
       weapons,
       spells: (c.spells || []).filter(sp => sp.name && sp.name.trim()).map(sp => ({ n: sp.name, b: sp.band || "" })).slice(0, 16),
-      spellHit: n(t.intuition)
+      spellHit: n(t.intuition),
+      status: (c.status || []).slice()
     };
   } finally { cur = prev; }
 }
 window.agonSheet = { current: () => cur, derive: c => derive(c), snapshot: c => partySnapshot(c) };
 })();
 </script>
-<script type="module" src="bridge.js?v=1.3.0"></script>
+<script type="module" src="bridge.js?v=1.4.0"></script>
 </body>
 </html>
