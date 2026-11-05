@@ -1,6 +1,6 @@
 {
   "name": "Agon Rules",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "manifest_version": 1,
   "author": "CJ",
   "description": "The Agon rulebooks: World Lore, Player's Handbook, and Historian's Handbook, with search.",
@@ -8,7 +8,7 @@
   "action": {
     "title": "Agon Rules",
     "icon": "/books/icon.svg",
-    "popover": "/books/index.html?v=1.2.2",
+    "popover": "/books/index.html?v=1.2.3",
     "width": 1000,
     "height": 900
   }
