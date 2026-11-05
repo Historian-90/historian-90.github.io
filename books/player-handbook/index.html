@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../books.css?v=1.3.1">
+<link rel="stylesheet" href="../books.css?v=1.3.2">
 </head>
 <body data-book="player-handbook">
 <header class="topbar">
@@ -980,7 +980,7 @@
 <h3 id="limit-cost-and-settling">Limit, Cost, and Settling<a class="anchor" href="#limit-cost-and-settling" aria-label="Link to this section">¶</a></h3>
 <ul>
 <li><strong>Limit.</strong> Your gauge holds up to <strong>12 + your Power points</strong>. That&rsquo;s how much strain you can take before you&rsquo;re Overreaching.</li>
-<li><strong>Cost.</strong> Every spell and active Affinity has a <strong>band</strong>, and using it adds that band&rsquo;s cost to your gauge: <strong>Blue 2 · Green 4 · Yellow 6 · Red 9</strong>. Cantrips like <em>Spinthēr</em>, and anything marked <em>None</em> or <em>N/A</em>, cost nothing.</li>
+<li><strong>Cost.</strong> Every spell and active Affinity belongs to a <strong>band</strong>, and using it adds that band&rsquo;s cost to your gauge: <strong>Blue 2 · Green 4 · Yellow 6 · Red 9</strong>. Every card gives the exact cost: Fundamental and Affinity cards have a <strong>Theion Cost</strong> line, and Spell List cards show it in their tag line (<em>Green · 4 Theion</em>). Cantrips like <em>Spinthēr</em>, and anything with a cost of <em>None</em>, cost nothing.</li>
 <li><strong>Holding.</strong> Each round you hold a Concentration spell adds <strong>1</strong> more.</li>
 <li><strong>Settling.</strong> At the end of every round (about six seconds), your Theion drops by your <strong>Intuition points</strong> (minimum 1), down to 0. Medium and Heavy armor slow it (see <a href="#armor-classes">Armor</a>).</li>
 </ul>
@@ -1015,6 +1015,53 @@
 <td style="text-align: left;">Red (<em>Photia</em>)</td>
 <td style="text-align: center;">9</td>
 <td style="text-align: left;">The string trembles. Anyone with divine sight can see it, and Frenzied can sense it.</td>
+</tr>
+</tbody>
+</table></div>
+<h5 id="theion-costs-at-a-glance">Theion Costs at a Glance</h5>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">Cost</th>
+<th style="text-align: left;">Spells</th>
+<th style="text-align: left;">Affinities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>0</strong></td>
+<td style="text-align: left;"><em>Spinthēr</em></td>
+<td style="text-align: left;">Every passive Affinity (Cost: None)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2</strong> (Blue)</td>
+<td style="text-align: left;"><em>Belos</em>, <em>Aspis</em>, <em>Potamos</em></td>
+<td style="text-align: left;">Enchanting (per enchantment)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>4</strong> (Green)</td>
+<td style="text-align: left;">Green spells (<em>Akontion</em>, <em>Iasis</em>, <em>Pyrsos</em>…)</td>
+<td style="text-align: left;">Prophecy · Protection (per shield) · Sovereign of the Dead (per familiar)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>6</strong> (Yellow)</td>
+<td style="text-align: left;">Yellow spells (<em>Kyklos</em>, <em>Lailaps</em>…)</td>
+<td style="text-align: left;">Deceit (per illusion) · Duality · Law (per judgment) · Scorn · Secrecy</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>9</strong> (Red)</td>
+<td style="text-align: left;">Red spells (<em>Olethros</em>, <em>Ekpyrōsis</em>…)</td>
+<td style="text-align: left;">Sovereign of the Sky (per storm) · Wrath (when unleashed)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>+1</strong></td>
+<td style="text-align: left;">Each round you hold a Concentration spell</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>+2</strong></td>
+<td style="text-align: left;">Quicken (Spinthēr or a Blue spell as your Minor Action)</td>
+<td style="text-align: left;"></td>
 </tr>
 </tbody>
 </table></div>
@@ -1089,22 +1136,22 @@
 <h3 id="the-fundamental-spells">The Fundamental Spells<a class="anchor" href="#the-fundamental-spells" aria-label="Link to this section">¶</a></h3>
 <div class="cards"><div class="card"><h4 id="spell-spinther">Spinthēr<a class="anchor" href="#spell-spinther" aria-label="Link to this section">¶</a></h4>
 <p><em>Element Adaptive · Cantrip</em></p>
-<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>10m</dd><dt>Theion Band</dt><dd>None</dd><dt>Duration</dt><dd>Instant</dd></dl>
+<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>10m</dd><dt>Theion Cost</dt><dd>None (cantrip)</dd><dt>Duration</dt><dd>Instant</dd></dl>
 
 <p>Snap your fingers and throw a spark of your element at one target: <strong>1d4 + Power pts</strong> damage. Small, quick, and endlessly repeatable: it costs no Theion at all.</p></div>
 <div class="card"><h4 id="spell-belos">Belos<a class="anchor" href="#spell-belos" aria-label="Link to this section">¶</a></h4>
 <p><em>Element Adaptive</em></p>
-<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>15m</dd><dt>Theion Band</dt><dd><span class="chip blue">Blue</span></dd><dt>Duration</dt><dd>Instant</dd></dl>
+<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>15m</dd><dt>Theion Cost</dt><dd>2 (Blue)</dd><dt>Duration</dt><dd>Instant</dd></dl>
 
 <p>With a quick flick of your hand, send a magic bolt of an element of your choice (that you have dominion over) toward a single target within range. The blast does <strong>1d8 + Power</strong> elemental damage.</p></div>
 <div class="card"><h4 id="spell-aspis">Aspis<a class="anchor" href="#spell-aspis" aria-label="Link to this section">¶</a></h4>
 <p><em>Element Adaptive</em></p>
-<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>Around Caster</dd><dt>Theion Band</dt><dd><span class="chip blue">Blue</span></dd><dt>Duration</dt><dd>Concentration</dd></dl>
+<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>Around Caster</dd><dt>Theion Cost</dt><dd>2 (Blue), +1 each round held</dd><dt>Duration</dt><dd>Concentration</dd></dl>
 
 <p>With at least one hand, palm outward, erect a barrier around yourself. <strong>Defensive Concentration:</strong> casting and holding Aspis each cost a <strong>Minor Action</strong> (see <em>Concentration</em>), and holding it adds 1 Theion each round. The spell can withstand up to <strong>8 HP + Power</strong> in damage if the damage against the shield is element neutral, weaker than the shield&rsquo;s element, or the same as the shield&rsquo;s element. If the damage is of an element stronger than the shield&rsquo;s, then it can only resist up to <strong>4 HP + Power</strong>. Damage remaining from the attack after the shield breaks is resolved against the target.</p></div>
 <div class="card"><h4 id="spell-potamos">Potamos<a class="anchor" href="#spell-potamos" aria-label="Link to this section">¶</a></h4>
 <p><em>Element Adaptive</em></p>
-<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>5m</dd><dt>Theion Band</dt><dd><span class="chip blue">Blue</span></dd><dt>Duration</dt><dd>Concentration</dd></dl>
+<dl class="props"><dt>Learn Time</dt><dd>N/A</dd><dt>Range</dt><dd>5m</dd><dt>Theion Cost</dt><dd>2 (Blue), +1 each round held</dd><dt>Duration</dt><dd>Concentration</dd></dl>
 
 <p>With one hand, palm outward, create a constant stream of an element you have dominion over. <strong>Offensive Concentration:</strong> casting and holding Potamos each cost your <strong>Action</strong> (see <em>Concentration</em>), and holding it adds 1 Theion each round. The initial blast does <strong>1d8 + Power</strong></p>
 <p>elemental damage, and for each turn that a target is hit by the blast, not including the initial hit, they suffer <strong>1d6 + Power</strong> elemental damage.</p></div></div>
@@ -1161,24 +1208,24 @@
 </tbody>
 </table></div>
 <h3 id="daily-affinities">Daily Affinities<a class="anchor" href="#daily-affinities" aria-label="Link to this section">¶</a></h3>
-<p>Some active Affinities in <em>The Conceptual Magics</em> are marked <strong>Daily</strong>. You can use a Daily Affinity <strong>once per day</strong> for free, and that use refreshes at dawn. Each additional use that day costs <strong>1 Agathós Daemon</strong> and automatically succeeds, with no roll needed. This applies both in and out of combat. Every use still adds its band&rsquo;s Theion.</p>
+<p>Some active Affinities in <em>The Conceptual Magics</em> are marked <strong>Daily</strong>. You can use a Daily Affinity <strong>once per day</strong> for free, and that use refreshes at dawn. Each additional use that day costs <strong>1 Agathós Daemon</strong> and automatically succeeds, with no roll needed. This applies both in and out of combat. Every use still adds its Theion Cost.</p>
 <h2 id="the-conceptual-magics-mageia">The Conceptual Magics (Mageia)<a class="anchor" href="#the-conceptual-magics-mageia" aria-label="Link to this section">¶</a></h2>
 <p>Every Conceptual Affinity is listed below, with the gods who grant it.</p>
 <div class="cards"><div class="card"><h4 id="affinity-alteration">Alteration<a class="anchor" href="#affinity-alteration" aria-label="Link to this section">¶</a></h4>
 <p><em>Hephaestus, Dionysus, Nyx</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>Short Rest</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>Short Rest</dd></dl>
 
 <p>The transmutation of one material into another, or the giving of a new form to an object. Useful for defense, as it can harden skin into a stonelike carapace. The mass of an object being transformed cannot be changed.</p>
 <p>If used to harden skin, treat as Light Armor (no Evasion penalty) and add 2 HP to each body part covered.</p>
 <p>If used to transform material into a weapon, select a weapon type that does not require ammunition. It crumbles at the end of the encounter, and it can&rsquo;t score a Critical Hit (a Divine Strike still counts).</p></div>
 <div class="card"><h4 id="affinity-animality">Animality<a class="anchor" href="#affinity-animality" aria-label="Link to this section">¶</a></h4>
 <p><em>Poseidon, Artemis, Hecate</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>Full Rest</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>Full Rest</dd></dl>
 
 <p>An ability to commune with and influence the natural beasts of Aiora. Even without a covenant, they may act as lesser familiars, fighting or spying for you. You may commune with up to three creatures at a time. You cannot see what they see or hear what they hear in real time, but you may receive all information gathered upon terminating the communion at will, or until your next Full Rest, which is sooner. You may commune with <strong>1 creature per cast</strong>.</p></div>
 <div class="card"><h4 id="affinity-archery">Archery<a class="anchor" href="#affinity-archery" aria-label="Link to this section">¶</a></h4>
 <p><em>Apollo, Artemis, Eros</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Prodigious talent with bows and firearms. Your shots are accurate and more often critical.</p>
 <p>Hit results of 15-20 with ranged weapons are Critical Hits.</p>
@@ -1186,7 +1233,7 @@
 <p>If both possess the Affinity, a Graze counts as a Hit.</p></div>
 <div class="card"><h4 id="affinity-authority">Authority<a class="anchor" href="#affinity-authority" aria-label="Link to this section">¶</a></h4>
 <p><em>Hera</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Hearing</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>Full Rest</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Hearing</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>Full Rest</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
 
 <p>You may not be able to sway others to see your side of things, but your commands carry a divine compulsion to obey.</p>
 <p>Roll a <strong>1d20 + Wit</strong> against 10 + your target&rsquo;s Wit modifier. If successful, the target is considered <strong>charmed</strong> and must obey one command from you. If not, they ignore you.</p>
@@ -1194,7 +1241,7 @@
 <p>Opponents with the Madness, Cunning, or Deceit Affinities are immune.</p></div>
 <div class="card"><h4 id="affinity-charm">Charm<a class="anchor" href="#affinity-charm" aria-label="Link to this section">¶</a></h4>
 <p><em>Iris, Aphrodite, Eros, Dionysus, Tyche</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Hearing</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Hearing</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
 
 <p>You possess an innate charisma and are naturally effective at inspiring others to act… or say a little more than they should.</p>
 <p>To inspire a target, make a <strong>Wit Trial (TN 12)</strong>. If successful, your target may roll their next Action with <strong>Weal</strong>.</p>
@@ -1202,83 +1249,83 @@
 <p>Opponents with the Madness, Cunning, or Deceit affinities are immune.</p></div>
 <div class="card"><h4 id="affinity-craftsmanship">Craftsmanship<a class="anchor" href="#affinity-craftsmanship" aria-label="Link to this section">¶</a></h4>
 <p><em>Hephaestus</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>You are able to craft anything, provided you have the materials and a basic understanding of the construct. Furthermore, anything you craft is of high quality.</p>
 <p>Weapons you craft deal <strong>+1 damage</strong>, and crafted <em>melee</em> weapons are 1 die tier higher (1d6 → 1d8), except 1d10s. Your crafts are worth 25% more, and armor you craft gains +2 HP (Light), +5 (Medium), or +8 (Heavy). You need no <strong>schematics</strong>, can make <strong>* Affinity</strong> items, roll crafting Trials with <strong>Weal</strong>, and finish jobs one tier faster.</p></div>
 <div class="card"><h4 id="affinity-cunning">Cunning<a class="anchor" href="#affinity-cunning" aria-label="Link to this section">¶</a></h4>
 <p><em>Hermes, Aphrodite, Eros, Tyche</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>You can see and hear what others do not and can plan accordingly. The Cunning Affinity passively safeguards you against Authority, Mischief, and Secrecy.</p>
 <p>You permanently gain 1 Trait Point to <strong>Wit</strong>.</p></div>
 <div class="card"><h4 id="affinity-deceit">Deceit<a class="anchor" href="#affinity-deceit" aria-label="Link to this section">¶</a></h4>
 <p><em>Hades, Nyx, Hecate</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action, Passive</dd><dt>Range</dt><dd>5m (diameter)</dd><dt>Theion Band</dt><dd><span class="chip yellow">Yellow</span></dd><dt>Duration</dt><dd>Short Rest</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span> (illusions only)</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action, Passive</dd><dt>Range</dt><dd>5m (diameter)</dd><dt>Theion Cost</dt><dd>6 (Yellow) per illusion; lies are free</dd><dt>Duration</dt><dd>Short Rest</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span> (illusions only)</dd></dl>
 
 <p>Your first-time lies are rarely ever detected and you have a natural ability to conjure magical illusions that seem almost real. Deceit is ineffective against those that possess the Hunting, Law, or Order affinities.</p>
 <p>When casting an illusion, roll a <strong>1d20 + Power</strong>. If Successful, the illusion may be as large as a 5m circle. Objects part of the illusion can produce sound but are intangible. If a Critical Success, objects part of the illusion are tangible, but if removed from the boundary of the illusion, will fade away.</p></div>
 <div class="card"><h4 id="affinity-duality">Duality<a class="anchor" href="#affinity-duality" aria-label="Link to this section">¶</a></h4>
 <p><em>Iris, Nyx, Hecate</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>10m</dd><dt>Theion Band</dt><dd><span class="chip yellow">Yellow</span></dd><dt>Duration</dt><dd>Short Rest</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>10m</dd><dt>Theion Cost</dt><dd>6 (Yellow)</dd><dt>Duration</dt><dd>Short Rest</dd></dl>
 
 <p>You can conjure a weaker double of yourself and your current weapon (Aegis form counts if wielded but does not give a modifier bonus to Hit rolls).</p>
 <p>Doppelgangers have half of your current HP and half of your trait points (both rounded down), and wield a copy of your weapon. They cannot use Affinities or spells.</p>
 <p>Duality creations last until your next short rest, or until destroyed or dismissed. If the dismissed or destroyed creation was a doppelganger, they transfer memories of their experiences to the original.</p></div>
 <div class="card"><h4 id="affinity-enchanting">Enchanting<a class="anchor" href="#affinity-enchanting" aria-label="Link to this section">¶</a></h4>
 <p><em>Hephaestus, Aphrodite</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Minor Action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Band</dt><dd><span class="chip blue">Blue</span></dd><dt>Duration</dt><dd>Encounter</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Minor Action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Cost</dt><dd>2 (Blue) per enchantment</dd><dt>Duration</dt><dd>Encounter</dd></dl>
 
 <p>You can imbue the active properties of any one (1) element to any weapon or object. You do not need to have the respective primordial Affinity to enchant its element.</p>
 <p>Once per Action, when the enchanted weapon lands a hit, add <strong>1d4 + Power pts</strong> elemental damage; resolve for opposing elements as necessary. The enchantment ends when the encounter does.</p></div>
 <div class="card"><h4 id="affinity-flight">Flight<a class="anchor" href="#affinity-flight" aria-label="Link to this section">¶</a></h4>
 <p><em>Nike, Hermes, Iris</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Take to the skies and soar as easily as the birds. When flying, you move at up to 3x your Speed (which also equates to your maximum altitude from the ground) but cannot Dash. You also suffer no harm from falling unless incapacitated.</p>
 <p>While airborne, you are more vulnerable to attacks against your person, so you suffer +3 Dmg with any hits landed against you. An attack that prones will knock you out of the air, negating your invulnerability to fall damage. You will be given 1 free Reaction Roll to prevent being proned when hitting the ground, which doesn&rsquo;t count against your one Reaction per round.</p></div>
 <div class="card"><h4 id="affinity-fortune">Fortune<a class="anchor" href="#affinity-fortune" aria-label="Link to this section">¶</a></h4>
 <p><em>Hermes, Tyche</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>You are blessed with material wealth.</p>
 <p>Roll a 1d100 for any circumstances that would naturally or consequentially yield obol or didra. The result is the percentage of extra wealth gained (min 1%, max 100%; round up to nearest whole number).</p></div>
 <div class="card"><h4 id="affinity-healing">Healing<a class="anchor" href="#affinity-healing" aria-label="Link to this section">¶</a></h4>
 <p><em>Apollo, Demeter</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Few wounds are beyond your ability to mend and minor curses will eventually give way to your purifying succor.</p>
 <p>All healing actions and items gain an extra <strong>1d6 + Power</strong> in healing, and they have a chance (Trial with <strong>Weal</strong>) to cure a negative magical status effect.</p></div>
 <div class="card"><h4 id="affinity-hunting">Hunting<a class="anchor" href="#affinity-hunting" aria-label="Link to this section">¶</a></h4>
 <p><em>Artemis</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Once you have found your prey, you never lose track of it; be it beast or man. Deceit cannot impede your hunt, but Secrecy will allow your target to elude you.</p>
 <p>Permanently gain 1 Trait Point to <strong>Perception</strong>. When you have discovered a creature that was hidden, you will know its location until your next Full Rest, as long as it&rsquo;s within 1km of you, and as long as it does not use Secrecy.</p>
 <p>Any illusions are immediately recognized for what they actually are.</p></div>
 <div class="card"><h4 id="affinity-ingenuity">Ingenuity<a class="anchor" href="#affinity-ingenuity" aria-label="Link to this section">¶</a></h4>
 <p><em>Hephaestus</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Anything you try doing or crafting has a chance at being more efficient or coming out better than normal&hellip; with a chance of backfire&hellip;</p>
 <p>For all Trials, roll <strong>2d20 + Creativity</strong>, taking the higher result. If you roll doubles, the result is a Failure.</p>
 <p>You will <em>never</em> roll with <strong>Woe</strong> for Trials.</p></div>
 <div class="card"><h4 id="affinity-kingship">Kingship<a class="anchor" href="#affinity-kingship" aria-label="Link to this section">¶</a></h4>
 <p><em>Zeus</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Good leaders are made great through the support of those they lead. Those blessed by Zeus are stronger when surrounded by other sons and daughters of Olympus.</p>
 <p>Count the number of demi-god allies immediately around you. Subtract that number from 20. The result is the lowest natural Hit that scores a Critical, for you and every demi-god ally within 10m.</p></div>
 <div class="card"><h4 id="affinity-knowledge">Knowledge<a class="anchor" href="#affinity-knowledge" aria-label="Link to this section">¶</a></h4>
 <p><em>Athena, Apollo</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Once you know something you never forget it. What is seen cannot be unseen, and what is heard cannot be unheard. Your mind is a vast library of both worldly and divine knowledge.</p>
 <p>Learning time for new weapons is halved for Aegis with this Affinity.</p>
 <p>Both demi-gods and Aegis can learn new spells for their primordial magics just as quickly.</p></div>
 <div class="card"><h4 id="affinity-law">Law<a class="anchor" href="#affinity-law" aria-label="Link to this section">¶</a></h4>
 <p><em>Athena, Demeter</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action, Passive</dd><dt>Range</dt><dd>Hearing</dd><dt>Theion Band</dt><dd><span class="chip yellow">Yellow</span></dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action, Passive</dd><dt>Range</dt><dd>Hearing</dd><dt>Theion Cost</dt><dd>6 (Yellow) per judgment</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>All of your decisions are just and right, and you may judge others in the name of Athena or Demeter. Your judgment can bestow forgiveness, granting a boon to their Affinities, succor for their wounds, or dispel a curse. Alternatively, you may penalize them, causing the opposite to occur by weakening Affinities, exacerbating wounds, or accelerating a curse. Those with the Law Affinity are immune to Deceit and Secrecy magic.</p>
 <ul>
@@ -1303,20 +1350,20 @@
 </ul></div>
 <div class="card"><h4 id="affinity-luck">Luck<a class="anchor" href="#affinity-luck" aria-label="Link to this section">¶</a></h4>
 <p><em>Tyche</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Blessed with good luck, you always seem to slip past danger, even if narrowly. But Tyche&rsquo;s favor is always followed by Nemesis, who balances the scales. Don&rsquo;t push your luck.</p>
 <p><strong>Tyche&rsquo;s Favor.</strong> Up to <strong>3 times per Full Rest</strong>, after you roll a Failure, a Miss, or a Graze, you may reroll it and take the new result. Mark each use.</p>
 <p><strong>Nemesis Keeps Count.</strong> Once you&rsquo;ve used all three, Nemesis is owed. The Historian picks one of your successful rolls and has you reroll it, and you keep the new result. Your favors don&rsquo;t return at a Full Rest until Nemesis has been paid.</p></div>
 <div class="card"><h4 id="affinity-madness">Madness<a class="anchor" href="#affinity-madness" aria-label="Link to this section">¶</a></h4>
 <p><em>Dionysus</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>With a little bit of wine, all magic that attempts to compel or influence you (Authority, Charm) is useless against a mind that cannot even comprehend itself. Only brute force works against you, and even then your Affinity can nullify pain, but at the cost of awareness.</p>
 <p>Must be inebriated to receive the effects of this Affinity. If so, you are immune to breaks in Concentration due to attacks against you, but your Perception is locked at 0, regardless of points assigned.</p></div>
 <div class="card"><h4 id="affinity-martial-prowess">Martial Prowess<a class="anchor" href="#affinity-martial-prowess" aria-label="Link to this section">¶</a></h4>
 <p><em>Ares, Kratos, Nike</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>In your hands, any melee weapon becomes far deadlier. Your natural proficiency in both armed and unarmed combat makes you a capable, feared warrior.</p>
 <p>Hit results of 15-20 with melee weapons are Critical Hits.</p>
@@ -1324,30 +1371,30 @@
 <p>If both possess the Affinity, a Graze counts as a Hit.</p></div>
 <div class="card"><h4 id="affinity-mischief">Mischief<a class="anchor" href="#affinity-mischief" aria-label="Link to this section">¶</a></h4>
 <p><em>Eros</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>You are more than a mere prankster. Traps (mechanical and magical alike), sabotage, and spreading chaos are your favorite methods of defeating or, at least, incapacitating the enemy. But your traps and trickery cannot fool those with the Order or Cunning Affinities.</p>
 <p>Trap devices set by you double their damage dealt to an opponent and require +1 additional Trait Point than normal in Perception to identify.</p></div>
 <div class="card"><h4 id="affinity-order">Order<a class="anchor" href="#affinity-order" aria-label="Link to this section">¶</a></h4>
 <p><em>Zeus</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Make sense of the world around you. Mischief and Deceit magic falls away and fails under your scrutinizing gaze. But what you cannot see or sense, cannot be; thus, Secrecy magic can run circles around you. <strong>Weal</strong> on Hit rolls against illusions.</p></div>
 <div class="card"><h4 id="affinity-prophecy">Prophecy<a class="anchor" href="#affinity-prophecy" aria-label="Link to this section">¶</a></h4>
 <p><em>Apollo</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd><span class="chip green">Green</span></dd><dt>Duration</dt><dd>1 Turn</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>4 (Green)</dd><dt>Duration</dt><dd>1 Turn</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
 
 <p>Close your worldly eyes to see as the oracles do. Know your enemy’s movements before they happen, feel the arrow before it pierces your back, and know the consequences of your actions. Though all visions that come to you are blurry, short, and can reveal only the immediate future, you are armed with a divine foresight to take proper action.</p>
 <p>Roll a <strong>1d20 + Intuition</strong>. If successful, the Historian reveals <strong>one concrete fact</strong> about one of the following: an area you&rsquo;re about to venture into, the likely result of a decision or action, the damage you&rsquo;re about to take, or the next action of the character or creature you last saw. You gain <strong>Weal</strong> on your next roll that acts on that fact.</p></div>
 <div class="card"><h4 id="affinity-protection">Protection<a class="anchor" href="#affinity-protection" aria-label="Link to this section">¶</a></h4>
 <p><em>Hera, Demeter</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Instant</dd><dt>Range</dt><dd>5m</dd><dt>Theion Band</dt><dd><span class="chip green">Green</span></dd><dt>Duration</dt><dd>1 Round</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Instant</dd><dt>Range</dt><dd>5m</dd><dt>Theion Cost</dt><dd>4 (Green) per shield</dd><dt>Duration</dt><dd>1 Round</dd></dl>
 
 <p>Blessed with a mother&rsquo;s unyielding love, you can swiftly cast an <strong>Aspis</strong> on yourself or an ally within range for free, spending neither your Action nor your Minor Action. You may also cast it as a Reaction, including when an ally within range is attacked. This uses your one Reaction for the round, and you can&rsquo;t combine it with anything else.</p>
-<p>This shield isn&rsquo;t held: it doesn&rsquo;t occupy a hand or slow you down, and it lasts until the start of your next turn. Otherwise, it follows the Aspis fundamental spell rules; but its Theion Band is Green (cost 4), instead of Blue, and it remains element <em>neutral</em>, not element adaptive.</p></div>
+<p>This shield isn&rsquo;t held: it doesn&rsquo;t occupy a hand or slow you down, and it lasts until the start of your next turn. Otherwise, it follows the Aspis fundamental spell rules; but it costs <strong>4 Theion</strong> (Green) instead of 2, it adds nothing while it lasts, and it remains element <em>neutral</em>, not element adaptive.</p></div>
 <div class="card"><h4 id="affinity-scorn">Scorn<a class="anchor" href="#affinity-scorn" aria-label="Link to this section">¶</a></h4>
 <p><em>Artemis, Aphrodite</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd><span class="chip yellow">Yellow</span></dd><dt>Duration</dt><dd>2 Turns</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>6 (Yellow)</dd><dt>Duration</dt><dd>2 Turns</dd></dl>
 
 <p>For the next hour or until canceled, whichever is sooner, channel all of your ego into a passive magic that can nullify an opponent’s Affinities when used against you. You are better than them, mightier, more graceful, and thus they ought to grovel at your heel and beg your mercy. But be warned, you are twice as vulnerable to physical attacks in this state.</p>
 <p>All magic dealt against you is nullified.</p>
@@ -1355,14 +1402,14 @@
 <p>If your Aegis is equipped as a weapon, it adopts the same immunity and vulnerability.</p></div>
 <div class="card"><h4 id="affinity-secrecy">Secrecy<a class="anchor" href="#affinity-secrecy" aria-label="Link to this section">¶</a></h4>
 <p><em>Nyx</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd><span class="chip yellow">Yellow</span></dd><dt>Duration</dt><dd>Short Rest</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>6 (Yellow)</dd><dt>Duration</dt><dd>Short Rest</dd><dt>Uses</dt><dd><span class="chip daily">Daily</span></dd></dl>
 
 <p>No magical helms needed here. You know the secret to conjuring a shroud of invisibility around your person and, by extension, anything you desire (while carried or touched). The only Affinities that can reveal your presence are Order and Cunning.</p>
 <p>Until your next Short Rest or until the shroud is dispelled, you are unseen and unheard.</p>
 <p>If you attack, take damage, or use any other active Affinity or spell, the shroud is dispelled.</p></div>
 <div class="card"><h4 id="affinity-sovereign-of-the-dead">Sovereign of the Dead<a class="anchor" href="#affinity-sovereign-of-the-dead" aria-label="Link to this section">¶</a></h4>
 <p><em>Hades</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Band</dt><dd><span class="chip green">Green</span></dd><dt>Duration</dt><dd>Full Rest</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Touch</dd><dt>Theion Cost</dt><dd>4 (Green) per familiar raised</dd><dt>Duration</dt><dd>Full Rest</dd></dl>
 
 <p>Permitted by Hades, raise a lesser familiar from a corpse; but the ruler of the Underworld is quite possessive of his subjects, so you may only have three at a time and until your next Full Rest.</p>
 <p>Unlike your Aegis, they will turn to ash if defeated and cannot be raised a second time. If a corpse was blessed with an Affinity in their life, they will retain it when enthralled.</p>
@@ -1370,39 +1417,39 @@
 <p>Legendary creatures cannot be enthralled.</p></div>
 <div class="card"><h4 id="affinity-sovereign-of-the-land-and-sea">Sovereign of the Land and Sea<a class="anchor" href="#affinity-sovereign-of-the-land-and-sea" aria-label="Link to this section">¶</a></h4>
 <p><em>Poseidon</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Honored by Poseidon, you always enjoy calm waters when you travel by boat. Marine life answer your call (see Animality; aquatic creatures only), and land and sea vehicles are always faster (+20 to the vehicle&rsquo;s speed). <strong>Weal</strong> on rolls in or on water.</p></div>
 <div class="card"><h4 id="affinity-sovereign-of-the-sky">Sovereign of the Sky<a class="anchor" href="#affinity-sovereign-of-the-sky" aria-label="Link to this section">¶</a></h4>
 <p><em>Zeus</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>1Km</dd><dt>Theion Band</dt><dd><span class="chip red">Red</span></dd><dt>Duration</dt><dd>Encounter</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>1Km</dd><dt>Theion Cost</dt><dd>9 (Red), once per storm</dd><dt>Duration</dt><dd>Encounter</dd></dl>
 
 <p>Championed by Zeus, you may call upon the King of Olympians to create a deadly lightning storm wherever you may be to smite your foes by the droves; but this is really only effective when outside and under an open sky.</p>
 <p>Summoned storms last until the encounter ends.</p>
 <p>Each of your turns while the storm is active, free of any action, roll a Hit (d20 + Intuition) to strike two opponents for <strong>1d8</strong> lightning, or one for <strong>2d8</strong>.</p></div>
 <div class="card"><h4 id="affinity-speed">Speed<a class="anchor" href="#affinity-speed" aria-label="Link to this section">¶</a></h4>
 <p><em>Nike, Hermes, Iris</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Fleet of foot, you are faster and more agile than most. Leap from danger, or close in on an enemy before they realize your presence. Even enemies with combat Affinities have a hard time pinning you down.</p>
 <p>Permanently gain +1 Trait Point to <strong>Agility</strong>.</p>
 <p>When you <strong>Dodge</strong>, add +2 more to your Evasion.</p></div>
 <div class="card"><h4 id="affinity-strength">Strength<a class="anchor" href="#affinity-strength" aria-label="Link to this section">¶</a></h4>
 <p><em>Kratos, Nike</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Heracles you are not, but your strength is still quite divine. You can easily lift most heavy objects that would normally require a Trial.</p>
 <p>Unarmed attacks (1d4 + Str) deal triple damage. Hit results of 15-20 with unarmed attacks are Critical Hits. Also gain +1 <strong>Strength</strong> point.</p></div>
 <div class="card"><h4 id="affinity-tenacity">Tenacity<a class="anchor" href="#affinity-tenacity" aria-label="Link to this section">¶</a></h4>
 <p><em>Ares, Kratos</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Resilient and tough, you can take a punch, even if Atlas himself delivered it—or so those that know you would brag. While you still have your limits, you are more likely to last twice or three times as long as other demi-gods on the battlefield before falling.</p>
 <p>You permanently gain +1 Trait Point in <strong>Endurance</strong>.</p>
 <p>If your HP is reduced to 0, make an <strong>Endurance Trial (TN 16)</strong>. On a Success or Close Call, you regain half of your max HP and do not dissipate. 1 Full Rest is required before making this roll again.</p></div>
 <div class="card"><h4 id="affinity-vitality">Vitality<a class="anchor" href="#affinity-vitality" aria-label="Link to this section">¶</a></h4>
 <p><em>Hades, Demeter, Dionysus</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Full of life and energy, you are naturally resistant to poisons. You also possess a passive regeneration ability, which slowly mends wounds over time and cleanses your blood. By sharing your blood with others, they may temporarily enjoy the benefits of regeneration as well.</p>
 <ul>
@@ -1413,30 +1460,30 @@
 </ul></div>
 <div class="card"><h4 id="affinity-violence">Violence<a class="anchor" href="#affinity-violence" aria-label="Link to this section">¶</a></h4>
 <p><em>Ares, Kratos</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>For every enemy you strike down, you absorb a part of their magical energy to heal and reinvigorate yourself, reveling in pure violence.</p>
 <p>Roll a <strong>1d10 + Endurance</strong> for each enemy you deliver a finishing blow to. The result is the total HP restored, with a possibility of a +10 HP overheal (max) kept until your next Full Rest.</p></div>
 <div class="card"><h4 id="affinity-warfare">Warfare<a class="anchor" href="#affinity-warfare" aria-label="Link to this section">¶</a></h4>
 <p><em>Athena, Ares</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Where there is a battle to be fought, you are there. Demi-gods with this Affinity grow stronger the more opponents there are; but as the enemy’s strength in numbers diminishes, so too does this boon.</p>
 <p>Once per Action, add <strong>+1</strong> to the damage of one hit, physical or magical, <strong>per opponent</strong> in the encounter, <strong>up to +4</strong>. If a Divine Strike or Critical Hit, add the bonus <em>after</em> resolving its damage.</p></div>
 <div class="card"><h4 id="affinity-wisdom">Wisdom<a class="anchor" href="#affinity-wisdom" aria-label="Link to this section">¶</a></h4>
 <p><em>Hera, Athena</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Band</dt><dd>N/A</dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>Passive</dd><dt>Range</dt><dd>N/A</dd><dt>Theion Cost</dt><dd>None</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>The efficacy of your primordial affinities is superior—thanks to your understanding of their fundamental natures—as is your defense against them.</p>
 <p>Permanently gain <strong>+1</strong> trait point in <strong>Power</strong>, and <strong>+2</strong> Resistance against curses from spells.</p></div>
 <div class="card"><h4 id="affinity-wrath">Wrath<a class="anchor" href="#affinity-wrath" aria-label="Link to this section">¶</a></h4>
 <p><em>Zeus, Hera, Poseidon</em></p>
-<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Eyesight</dd><dt>Theion Band</dt><dd><span class="chip red">Red</span></dd><dt>Duration</dt><dd>N/A</dd></dl>
+<dl class="props"><dt>Casting Time</dt><dd>1 Action</dd><dt>Range</dt><dd>Eyesight</dd><dt>Theion Cost</dt><dd>9 (Red), when you unleash it</dd><dt>Duration</dt><dd>N/A</dd></dl>
 
 <p>Every assault against your person and Aegis, magical or otherwise, is harnessed into deep rage. At your leisure (even, mayhap, your pleasure) deal <strong>twice</strong> the damage taken, up to <strong>20 + Power</strong>, against 1 target.</p>
 <p>While building Wrath, you cannot move, and the only Action you can take is an Attack, either on your turn or as a Reaction (which uses your one Reaction for the round). That Attack ends the build and unleashes your Wrath. No Hit roll required. You may still take your Minor Action while building.</p>
 <p>Only one selected opponent will receive your Wrath damage. This attack will hit automatically. If the opponent is at range, the attack is unleashed magically but is element-neutral (having no strengths or weaknesses against defending elements).</p>
-<p>If you have taken no damage, no damage is returned and your Theion is not spent.</p>
+<p>Wrath adds its <strong>9 Theion</strong> when you unleash it, not while you build it. If you have taken no damage, nothing is unleashed and no Theion is added.</p>
 <p>If your Aegis is equipped as a weapon, damage they receive is counted toward your Wrath. If the Aegis can build Wrath, they can do so in weapon form and the master is not restricted in movement, but attacks with the Aegis as a weapon will unleash the Wrath.</p></div></div>
 <h1 id="equipment-economy"><span class="num">Part IV</span> Equipment &amp; Economy<a class="anchor" href="#equipment-economy" aria-label="Link to this section">¶</a></h1><div class="meander partline"></div>
 <h2 id="obol-didra">Obol &amp; Didra<a class="anchor" href="#obol-didra" aria-label="Link to this section">¶</a></h2>
@@ -3163,7 +3210,7 @@
 <h2 id="spell-list">Spell List<a class="anchor" href="#spell-list" aria-label="Link to this section">¶</a></h2>
 <p>Every demi-god and Aegis knows the four fundamentals (<strong>Spinthēr</strong>, <strong>Belos</strong>, <strong>Aspis</strong>, and <strong>Potamos</strong>). Every other spell below must be learned (see <a href="#your-spell-list">Your Spell List</a> in <em>Character Creation</em>). <strong>Adaptive</strong> spells take any element you have dominion over; elemental spells need that element&rsquo;s Primordial Affinity.</p>
 <h3 id="casting-spells">Casting Spells<a class="anchor" href="#casting-spells" aria-label="Link to this section">¶</a></h3>
-<p><strong>Every damaging spell rolls to Hit.</strong> Heals, shields, walls, and boons don&rsquo;t. Fundamentals cost the Blue band&rsquo;s 2 Theion (Spinthēr costs nothing). See <a href="#theion-the-limits-of-magic">Theion</a> for costs, Quicken, and Overreach.</p>
+<p><strong>Every damaging spell rolls to Hit.</strong> Heals, shields, walls, and boons don&rsquo;t. Each spell&rsquo;s tag line gives its band and exact cost: <strong>Blue 2 · Green 4 · Yellow 6 · Red 9</strong> Theion. Belos, Aspis, and Potamos cost 2; Spinthēr costs nothing. Holding a Concentration spell adds <strong>1 Theion</strong> each round, and <strong>Quicken</strong> adds 2. See <a href="#theion-the-limits-of-magic">Theion</a> for the Limit, settling, and Overreach.</p>
 <p>Spells roll to Hit like a weapon: <strong>d20 + your Intuition points</strong> against the target&rsquo;s Evasion, with the same outcomes (spells crit only on a natural 20).</p>
 <p><strong>Graze:</strong> when a spell misses by 1-4, the target still takes damage equal to your <strong>Power</strong> modifier (Spinthēr and Xiphē: your Power pts). No curses apply.</p>
 <p><strong>&rdquo;+ Power&rdquo;</strong> means your Power modifier (points × 2). <strong>&rdquo;+ Power pts&rdquo;</strong> means your Power points.</p>
@@ -3174,7 +3221,7 @@
 <thead>
 <tr>
 <th style="text-align: left;">Band</th>
-<th style="text-align: center;">Theion</th>
+<th style="text-align: center;">Theion Cost</th>
 <th style="text-align: center;">Learn Time</th>
 <th style="text-align: center;">Min. Power</th>
 </tr>
@@ -3208,90 +3255,90 @@
 </table></div>
 <h3 id="core-spells-adaptive">Core Spells <em>(Adaptive)</em><a class="anchor" href="#core-spells-adaptive" aria-label="Link to this section">¶</a></h3>
 <div class="cards"><div class="card"><h4 id="the-fundamentals">The Fundamentals<a class="anchor" href="#the-fundamentals" aria-label="Link to this section">¶</a></h4>
-<p><em>Spinthēr, Belos, Aspis, and Potamos.</em> Every demi-god and Aegis knows them; see <a href="#the-fundamental-spells">The Fundamental Spells</a> in <em>Divine Power</em>. Belos and Potamos use the Blue band, and Spinthēr needs none.</p></div>
+<p><em>Spinthēr, Belos, Aspis, and Potamos.</em> Every demi-god and Aegis knows them; see <a href="#the-fundamental-spells">The Fundamental Spells</a> in <em>Divine Power</em>. Belos, Aspis, and Potamos cost <strong>2 Theion</strong> (Blue), and Spinthēr costs nothing.</p></div>
 <div class="card"><h4 id="spell-akontion">Akontion<a class="anchor" href="#spell-akontion" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 30m · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 30m · <strong>Instant</strong></p>
 <p>Hurl a javelin of raw element at one target: <strong>2d10 + Power</strong> damage.</p></div>
 <div class="card"><h4 id="spell-iasis">Iasis<a class="anchor" href="#spell-iasis" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · No Hit roll</em> · <strong>Range</strong> 5m · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · No Hit roll</em> · <strong>Range</strong> 5m · <strong>Instant</strong></p>
 <p>Mend one creature&rsquo;s wounds with your element (fire cauterizes, water washes, shadow knits): it regains <strong>2d8 + Power</strong> HP, up to its maximum.</p></div>
 <div class="card"><h4 id="spell-kyklos">Kyklos<a class="anchor" href="#spell-kyklos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip yellow">Yellow</span> · Hit · Power 1</em> · <strong>Range</strong> 20m · <strong>Instant</strong> · 4m radius</p>
+<p><em><span class="chip yellow">Yellow</span> · 6 Theion · Hit · Power 1</em> · <strong>Range</strong> 20m · <strong>Instant</strong> · 4m radius</p>
 <p>A ring of your element erupts around a point you can see: <strong>2d8 + Power</strong> to every creature in the circle.</p></div>
 <div class="card"><h4 id="spell-olethros">Olethros<a class="anchor" href="#spell-olethros" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip red">Red</span> · Hit · Power 2</em> · <strong>Range</strong> 40m · <strong>Instant</strong></p>
+<p><em><span class="chip red">Red</span> · 9 Theion · Hit · Power 2</em> · <strong>Range</strong> 40m · <strong>Instant</strong></p>
 <p>&ldquo;Ruin.&rdquo; Pull the string as tight as it goes and pour it into one target: <strong>6d8 + Power</strong> damage.</p></div></div>
 <h3 id="fire">Fire<a class="anchor" href="#fire" aria-label="Link to this section">¶</a></h3>
 <p><em>Aggressive and spreading. It keeps hurting after it lands.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-pyrsos">Pyrsos<a class="anchor" href="#spell-pyrsos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 20m · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 20m · <strong>Instant</strong></p>
 <p>A firebrand that clings: <strong>1d10 + Power</strong> damage, and the target is <strong>Burning</strong> (End): <strong>1d6</strong> at the start of each of its next 2 turns.</p></div>
 <div class="card"><h4 id="spell-ekpyrosis">Ekpyrōsis<a class="anchor" href="#spell-ekpyrosis" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip red">Red</span> · Hit · Power 2</em> · <strong>Range</strong> 30m · <strong>Instant</strong> · 6m radius</p>
+<p><em><span class="chip red">Red</span> · 9 Theion · Hit · Power 2</em> · <strong>Range</strong> 30m · <strong>Instant</strong> · 6m radius</p>
 <p>The great conflagration. <strong>4d8 + Power</strong> to every creature in the area, and the ground keeps burning until the end of your next turn: anyone who starts a turn in it or walks into it takes <strong>1d6</strong>.</p></div></div>
 <h3 id="water">Water<a class="anchor" href="#water" aria-label="Link to this section">¶</a></h3>
 <p><em>Flowing and restorative. It sweeps foes away and carries friends.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-kyma">Kyma<a class="anchor" href="#spell-kyma" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 10m line, 2m wide · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 10m line, 2m wide · <strong>Instant</strong></p>
 <p>A crashing wave: <strong>2d6 + Power</strong> to each creature in the line, and each is pushed 3m and knocked <strong>Prone</strong> (Agi).</p></div>
 <div class="card"><h4 id="spell-pege">Pēgē<a class="anchor" href="#spell-pege" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip yellow">Yellow</span> · No Hit roll · Power 1</em> · <strong>Range</strong> 10m around you · <strong>Instant</strong></p>
+<p><em><span class="chip yellow">Yellow</span> · 6 Theion · No Hit roll · Power 1</em> · <strong>Range</strong> 10m around you · <strong>Instant</strong></p>
 <p>Call up a healing spring. You and up to 3 allies regain <strong>2d6 + Power</strong> HP and become <strong>Regenerating</strong> (<strong>1d4</strong> at the start of each turn) for 3 turns. Burning ends.</p></div></div>
 <h3 id="earth">Earth<a class="anchor" href="#earth" aria-label="Link to this section">¶</a></h3>
 <p><em>Unmoving and protective. The ground answers you.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-teichos">Teichos<a class="anchor" href="#spell-teichos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · No Hit roll</em> · <strong>Range</strong> 15m · Lasts until destroyed or a Short Rest</p>
+<p><em><span class="chip green">Green</span> · 4 Theion · No Hit roll</em> · <strong>Range</strong> 15m · Lasts until destroyed or a Short Rest</p>
 <p>Raise a wall up to 6m long, 3m high, and 1m thick. It has <strong>15 + Power</strong> HP and blocks movement and line of sight.</p></div>
 <div class="card"><h4 id="spell-seismos">Seismos<a class="anchor" href="#spell-seismos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip yellow">Yellow</span> · Hit · Power 1</em> · <strong>Range</strong> 20m · <strong>Instant</strong> · 6m radius</p>
+<p><em><span class="chip yellow">Yellow</span> · 6 Theion · Hit · Power 1</em> · <strong>Range</strong> 20m · <strong>Instant</strong> · 6m radius</p>
 <p>Split the earth: <strong>2d8 + Power</strong> to every creature on the ground in the area, and each is knocked <strong>Prone</strong> (Agi). Flying creatures are unaffected.</p></div></div>
 <h3 id="wind">Wind<a class="anchor" href="#wind" aria-label="Link to this section">¶</a></h3>
 <p><em>Swift and free. Wind moves people, friend or foe.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-zephyros">Zephyros<a class="anchor" href="#spell-zephyros" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · No Hit roll</em> · <strong>Range</strong> 10m · Until the end of their next turn</p>
+<p><em><span class="chip green">Green</span> · 4 Theion · No Hit roll</em> · <strong>Range</strong> 10m · Until the end of their next turn</p>
 <p>A tailwind for you and up to 2 allies: each becomes <strong>Nimble</strong>, gains <strong>+5m Speed</strong>, and takes no falling damage.</p></div>
 <div class="card"><h4 id="spell-lailaps">Lailaps<a class="anchor" href="#spell-lailaps" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip yellow">Yellow</span> · Hit · Power 1</em> · <strong>Range</strong> 20m · <strong>Offensive Concentration</strong> · 3m radius</p>
+<p><em><span class="chip yellow">Yellow</span> · 6 Theion · Hit · Power 1</em> · <strong>Range</strong> 20m · <strong>Offensive Concentration</strong> · 3m radius</p>
 <p>Spin up a whirlwind. When cast, and each turn you hold it, it deals <strong>2d6 + Power</strong> to every creature inside and leaves them <strong>Slowed</strong> (Str). Each turn you hold it, you may move it up to 10m.</p></div></div>
 <h3 id="lightning">Lightning<a class="anchor" href="#lightning" aria-label="Link to this section">¶</a></h3>
 <p><em>Fast and punishing. It jumps from target to target.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-astrape">Astrapē<a class="anchor" href="#spell-astrape" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 30m · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 30m · <strong>Instant</strong></p>
 <p>A forked bolt: <strong>2d8 + Power</strong> to one target, then it arcs to a second target within 5m of the first for half that damage (compare the same Hit roll to its Evasion).</p></div>
 <div class="card"><h4 id="spell-keraunos">Keraunos<a class="anchor" href="#spell-keraunos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip red">Red</span> · Hit · Power 2</em> · <strong>Range</strong> Line of sight · <strong>Instant</strong></p>
+<p><em><span class="chip red">Red</span> · 9 Theion · Hit · Power 2</em> · <strong>Range</strong> Line of sight · <strong>Instant</strong></p>
 <p>The thunderbolt of Zeus. <strong>5d8 + Power</strong> damage, and the target is <strong>Stunned</strong> (End). It can&rsquo;t be Dodged or Parried, and a Graze counts as a Hit.</p></div></div>
 <h3 id="ice">Ice<a class="anchor" href="#ice" aria-label="Link to this section">¶</a></h3>
 <p><em>Patient and binding. It locks foes in place and armors friends.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-pagos">Pagos<a class="anchor" href="#spell-pagos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 20m · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 20m · <strong>Instant</strong></p>
 <p>A lance of frost: <strong>1d10 + Power</strong> damage, and the target is <strong>Slowed</strong> (Str). If it was already Slowed, it is <strong>Bound</strong> (Agi) instead.</p></div>
 <div class="card"><h4 id="spell-krystallos">Krystallos<a class="anchor" href="#spell-krystallos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip yellow">Yellow</span> · No Hit roll · Power 1</em> · <strong>Range</strong> 5m · Until depleted or the encounter ends</p>
+<p><em><span class="chip yellow">Yellow</span> · 6 Theion · No Hit roll · Power 1</em> · <strong>Range</strong> 5m · Until depleted or the encounter ends</p>
 <p>Encase yourself or an ally in a skin of ice: <strong>Shielded</strong> for <strong>12 + Power</strong> HP. Anyone who hits the shielded creature with a melee attack is <strong>Slowed</strong> (Str).</p></div></div>
 <h3 id="metal">Metal<a class="anchor" href="#metal" aria-label="Link to this section">¶</a></h3>
 <p><em>Cutting and relentless. Blades that bite through armor.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-xiphe">Xiphē<a class="anchor" href="#spell-xiphe" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 15m · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 15m · <strong>Instant</strong></p>
 <p>Three conjured blades fly out. Roll a Hit for each blade (they can strike different targets); each deals <strong>1d6 + Power pts</strong>, and a blade that Grazes deals your Power pts.</p></div>
 <div class="card"><h4 id="spell-drepanon">Drepanon<a class="anchor" href="#spell-drepanon" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip yellow">Yellow</span> · Hit · Power 1</em> · <strong>Range</strong> 10m · <strong>Instant</strong></p>
+<p><em><span class="chip yellow">Yellow</span> · 6 Theion · Hit · Power 1</em> · <strong>Range</strong> 10m · <strong>Instant</strong></p>
 <p>A scything sickle of living metal: <strong>4d6 + Power</strong> damage with <strong>Sunder</strong> (ignores Aspis, Protection, and Guard), and the target is <strong>Bleeding</strong> (End): <strong>1d4</strong> at the start of each of its next 3 turns.</p></div></div>
 <h3 id="light-2">Light<a class="anchor" href="#light-2" aria-label="Link to this section">¶</a></h3>
 <p><em>Searing and revealing. It blinds enemies and spares friends.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-auge">Augē<a class="anchor" href="#spell-auge" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 6m around you · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 6m around you · <strong>Instant</strong></p>
 <p>A flash of radiance that hits <strong>enemies only</strong>: <strong>1d6 + Power</strong> damage, and each is <strong>Blinded</strong> (Per). Creatures hidden in darkness are revealed (this doesn&rsquo;t break <em>Secrecy</em>).</p></div>
 <div class="card"><h4 id="spell-aktis">Aktis<a class="anchor" href="#spell-aktis" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip red">Red</span> · Hit · Power 2</em> · <strong>Range</strong> 40m line, 2m wide · <strong>Instant</strong></p>
+<p><em><span class="chip red">Red</span> · 9 Theion · Hit · Power 2</em> · <strong>Range</strong> 40m line, 2m wide · <strong>Instant</strong></p>
 <p>A lance of sunlight. Every enemy in the line takes <strong>6d8 + Power</strong>; every ally in it instead regains <strong>2d8</strong> HP.</p></div></div>
 <h3 id="shadow">Shadow<a class="anchor" href="#shadow" aria-label="Link to this section">¶</a></h3>
 <p><em>Sly and draining. It moves unseen and smothers the light.</em></p>
 <div class="cards"><div class="card"><h4 id="spell-skia">Skia<a class="anchor" href="#spell-skia" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip green">Green</span> · Hit</em> · <strong>Range</strong> 15m · <strong>Instant</strong></p>
+<p><em><span class="chip green">Green</span> · 4 Theion · Hit</em> · <strong>Range</strong> 15m · <strong>Instant</strong></p>
 <p>Step through a target&rsquo;s shadow and strike from it: <strong>1d10 + Power</strong> damage, and you appear beside the target. You are <strong>Nimble</strong> until your next turn.</p></div>
 <div class="card"><h4 id="spell-erebos">Erebos<a class="anchor" href="#spell-erebos" aria-label="Link to this section">¶</a></h4>
-<p><em><span class="chip yellow">Yellow</span> · Hit · Power 1</em> · <strong>Range</strong> 20m · 5m radius · Until the end of your next turn</p>
+<p><em><span class="chip yellow">Yellow</span> · 6 Theion · Hit · Power 1</em> · <strong>Range</strong> 20m · 5m radius · Until the end of your next turn</p>
 <p>Swallow an area in darkness: <strong>2d8 + Power</strong> to every creature inside when cast. Creatures inside are <strong>Blinded</strong> (Per) unless they have the Shadow Affinity, and ordinary lights go out. Light spells dispel it.</p></div></div>
 <h2 id="boons-and-curses">Boons and Curses<a class="anchor" href="#boons-and-curses" aria-label="Link to this section">¶</a></h2>
 <p><strong>Boons</strong> help and <strong>curses</strong> hinder. Spells, Affinities, and some weapons apply them.</p>
@@ -3424,9 +3471,9 @@
 <p>Medicine and Nectar make excellent trade goods where obol doesn&rsquo;t work. A frontier settlement may trade a night&rsquo;s lodging and a guide for a single kit.</p></div>
 
     </article>
-    <footer class="bookfoot"><div class="meander"></div>Agon · Player&#x27;s Handbook · v1.3.1<br><small>Black-figure vignettes and diagrams were drawn for Agon. Historical prints are public domain (CC0) from The Metropolitan Museum of Art's Open Access collection.</small></footer>
+    <footer class="bookfoot"><div class="meander"></div>Agon · Player&#x27;s Handbook · v1.3.2<br><small>Black-figure vignettes and diagrams were drawn for Agon. Historical prints are public domain (CC0) from The Metropolitan Museum of Art's Open Access collection.</small></footer>
   </main>
 </div>
-<script src="../books.js?v=1.3.1"></script>
+<script src="../books.js?v=1.3.2"></script>
 </body>
 </html>
