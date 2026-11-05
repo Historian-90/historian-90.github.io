@@ -207,6 +207,8 @@ button.chip { cursor: pointer; background: transparent; }
 .stat .foot { border-top: 1px solid var(--hair); font-family: var(--entry); font-size: 10.5px; color: var(--muted); padding: 0 4px; display: grid; place-items: center; white-space: nowrap; overflow: hidden; }
 .stat .foot label { display: flex; align-items: center; gap: 4px; }
 .stat .foot input { width: 28px; border: 0; border-bottom: 1px solid var(--rule); background: transparent; text-align: center; font-family: var(--entry); font-size: 13px; color: var(--ink); }
+.stat .foot .iniRoll { font-family: var(--entry); font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--accent); background: none; border: 0; padding: 2px 6px; cursor: pointer; }
+.stat .foot .iniRoll:hover { text-decoration: underline; }
 .stat input[type=number], .bigbox input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .stat input[type=number]::-webkit-inner-spin-button, .stat input[type=number]::-webkit-outer-spin-button,
 .bigbox input[type=number]::-webkit-inner-spin-button, .bigbox input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -494,7 +496,7 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
           <button type="button" class="ti" data-tip="&lt;b&gt;Initiative&lt;/b&gt;: roll d20 + your Agility modifier (Agility points × 2). An Aegis returning to human form acts right after its master instead." aria-label="About Initiative">i</button>
           <div class="big" id="iniVal"></div>
           <div class="cap">Initiative</div>
-          <div class="foot">d20 + Agi × 2</div>
+          <div class="foot"><button type="button" class="iniRoll" id="btnIniStat" title="Roll d20 + your Agility modifier">Roll</button></div>
         </div>
         <div class="stat">
           <button type="button" class="ti" data-tip="&lt;b&gt;Agathós Daemons&lt;/b&gt; are earned on a natural 20 on a Trial. Spend 1 to guarantee a Success, or for an extra use of a Daily Affinity." aria-label="About Agathós Daemons">i</button>
@@ -561,6 +563,7 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
       <h2>Theion Gauge <button type="button" class="ti" data-tip="&lt;p&gt;&lt;b&gt;Next round&lt;/b&gt; fills every band one level and refreshes your turn. Press &lt;b&gt;Use&lt;/b&gt; when you spend a ready band.&lt;/p&gt;&lt;p&gt;A band powering a held spell stays spent and empties when the spell ends.&lt;/p&gt;&lt;p&gt;&lt;b&gt;End combat&lt;/b&gt; empties every band set to Resets. The standard rule carries every band until a Full Rest.&lt;/p&gt;" aria-label="About the Theion Gauge">i</button><span class="grow"></span></h2>
       <div id="theion"></div>
       <div class="rowbtns">
+        <button type="button" id="btnInit">Roll initiative</button>
         <button type="button" id="btnNextRound" class="primary">Next round</button>
         <button type="button" id="btnEndCombat">End combat</button>
         <button type="button" id="btnShortRest">Short Rest</button>
@@ -1172,6 +1175,7 @@ function renderStats(d){
   $("evaRange").textContent = `${d.eva}+ to hit you`;
   $("evaWhy").textContent = `${n(cur.traits.agility)} Agi${d.arm.pen?` − ${d.arm.pen} armor`:""}`;
   $("iniVal").textContent = "+" + d.ini;
+  { const r = cur && window.__iniRolls && window.__iniRolls[cur.id]; const b = $("btnIniStat"); if (b) b.textContent = r ? `Rolled ${r}` : "Roll"; }
   $("expNext").textContent = d.next!==null ? `Lv ${d.lvl} · next at ${d.next.toLocaleString()}` : `Lv 15 (max)`;
   $("armorRules").textContent = d.arm.txt;
 }
@@ -1448,7 +1452,19 @@ $("btnNextRound").onclick = () => { cur.combat.riposte = false;
   concNote = ended.join(" ");
   renderCombat(); scheduleSave();
 };
-$("btnEndCombat").onclick = () => { BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); cur.combat.used={action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.conc.forEach((c,i)=>{ if (c.spell.trim()) endConc(i, "combat over"); }); BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); concNote = ""; renderCombat(); scheduleSave(); };
+function rollInitiative(){
+  if (!cur) return;
+  const mod = derive(cur).ini, nat = die(20), total = nat + mod;
+  const lines = [`Initiative <span class="big">${total}</span>`, `<span class="lx">d20 ${nat}${mod ? ` + Agility ${mod}` : ""} = ${total}</span>`];
+  if (cur.kind === "aegis") lines.push(`<span class="lx">In weapon form, or returning to human form, an Aegis acts right after its master instead.</span>`);
+  logEntry("", "Initiative", lines);
+  (window.__iniRolls = window.__iniRolls || {})[cur.id] = total;
+  $("btnIniStat").textContent = `Rolled ${total}`;
+  try { window.agonOBR && window.agonOBR.initiative && window.agonOBR.initiative(cur, total); } catch(_){}
+}
+$("btnInit").onclick = rollInitiative;
+$("btnIniStat").onclick = rollInitiative;
+$("btnEndCombat").onclick = () => { if (window.__iniRolls && cur) delete window.__iniRolls[cur.id]; $("btnIniStat").textContent = "Roll"; BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); cur.combat.used={action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.conc.forEach((c,i)=>{ if (c.spell.trim()) endConc(i, "combat over"); }); BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); concNote = ""; renderCombat(); scheduleSave(); };
 $("btnDawn").onclick = () => { cur.combat.daily = {}; renderAff(); renderCombat(); scheduleSave(); };
 document.addEventListener("change", e => { const el = e.target; if (!cur || !el.dataset || el.dataset.s === undefined || el.dataset.f !== "name") return; const k = spellKey(el.value); if (!k) return; const row = cur.spells[+el.dataset.s]; Object.assign(row, spellEntry(k), {element: row.element || spellEntry(k).element}); renderSpells(); renderCombat(); scheduleSave(); });
 $("spellPick").onchange = e => { const k = e.target.value; if (!k || !SPELLS[k]) return; cur.spells.push(spellEntry(k)); renderSpells(); renderCombat(); scheduleSave(); };
