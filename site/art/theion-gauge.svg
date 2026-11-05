@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 475" role="img" aria-label="The Theion Gauge: four rings; Blue fills in 2 rounds, Green 3, Yellow 4, Red 5"><title>The Theion Gauge</title>
+<circle cx="250" cy="235" r="215" fill="var(--panel)" stroke="var(--rule)" stroke-width="3"/>
+<circle cx="250" cy="235" r="207" fill="none" stroke="var(--rule)" stroke-width="1" opacity=".5"/>
+<path d="M256.6,45.1 A190,190 0 0 1 256.6,424.9 L255.6,394.9 A160,160 0 0 0 255.6,75.1 Z" fill="var(--b-blue)" fill-opacity="1" stroke="var(--b-blue)" stroke-width="1.5"/>
+<path d="M243.4,424.9 A190,190 0 0 1 243.4,45.1 L244.4,75.1 A160,160 0 0 0 244.4,394.9 Z" fill="var(--b-blue)" fill-opacity="1" stroke="var(--b-blue)" stroke-width="1.5"/>
+<path d="M255.2,85.1 A150,150 0 0 1 382.4,305.4 L356.0,291.3 A120,120 0 0 0 254.2,115.1 Z" fill="var(--b-green)" fill-opacity="1" stroke="var(--b-green)" stroke-width="1.5"/>
+<path d="M377.2,314.5 A150,150 0 0 1 122.8,314.5 L148.2,298.6 A120,120 0 0 0 351.8,298.6 Z" fill="var(--b-green)" fill-opacity="1" stroke="var(--b-green)" stroke-width="1.5"/>
+<path d="M117.6,305.4 A150,150 0 0 1 244.8,85.1 L245.8,115.1 A120,120 0 0 0 144.0,291.3 Z" fill="var(--b-green)" fill-opacity="1" stroke="var(--b-green)" stroke-width="1.5"/>
+<path d="M253.8,125.1 A110,110 0 0 1 359.9,231.2 L330.0,232.2 A80,80 0 0 0 252.8,155.0 Z" fill="var(--b-yellow)" fill-opacity="1" stroke="var(--b-yellow)" stroke-width="1.5"/>
+<path d="M359.9,238.8 A110,110 0 0 1 253.8,344.9 L252.8,315.0 A80,80 0 0 0 330.0,237.8 Z" fill="var(--b-yellow)" fill-opacity="1" stroke="var(--b-yellow)" stroke-width="1.5"/>
+<path d="M246.2,344.9 A110,110 0 0 1 140.1,238.8 L170.0,237.8 A80,80 0 0 0 247.2,315.0 Z" fill="var(--b-yellow)" fill-opacity="1" stroke="var(--b-yellow)" stroke-width="1.5"/>
+<path d="M140.1,231.2 A110,110 0 0 1 246.2,125.1 L247.2,155.0 A80,80 0 0 0 170.0,232.2 Z" fill="var(--b-yellow)" fill-opacity="0.14" stroke="var(--b-yellow)" stroke-width="1.5"/>
+<path d="M252.4,165.0 A70,70 0 0 1 315.8,211.1 L287.6,221.3 A40,40 0 0 0 251.4,195.0 Z" fill="var(--b-red)" fill-opacity="1" stroke="var(--b-red)" stroke-width="1.5"/>
+<path d="M317.3,215.7 A70,70 0 0 1 293.1,290.2 L274.6,266.5 A40,40 0 0 0 288.5,224.0 Z" fill="var(--b-red)" fill-opacity="1" stroke="var(--b-red)" stroke-width="1.5"/>
+<path d="M289.1,293.0 A70,70 0 0 1 210.9,293.0 L227.6,268.2 A40,40 0 0 0 272.4,268.2 Z" fill="var(--b-red)" fill-opacity="1" stroke="var(--b-red)" stroke-width="1.5"/>
+<path d="M206.9,290.2 A70,70 0 0 1 182.7,215.7 L211.5,224.0 A40,40 0 0 0 225.4,266.5 Z" fill="var(--b-red)" fill-opacity="0.14" stroke="var(--b-red)" stroke-width="1.5"/>
+<path d="M184.2,211.1 A70,70 0 0 1 247.6,165.0 L248.6,195.0 A40,40 0 0 0 212.4,221.3 Z" fill="var(--b-red)" fill-opacity="0.14" stroke="var(--b-red)" stroke-width="1.5"/>
+<circle cx="250" cy="235" r="26" fill="var(--paper)" stroke="var(--rule)" stroke-width="2"/>
+<line x1="250" y1="235" x2="250" y2="30" stroke="var(--ink)" stroke-width="3"/>
+<circle cx="250" cy="235" r="7" fill="var(--ink)"/>
+<text x="500" y="62" font-family="Cinzel, Georgia, serif" font-size="15" letter-spacing="2" fill="var(--muted)">BAND · FULL AFTER</text>
+<rect x="500" y="88" width="26" height="26" rx="3" fill="var(--b-blue)"/>
+<text x="540" y="108" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Blue</text>
+<text x="540" y="134" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Húdōr</tspan> · 2 rounds</text>
+<rect x="500" y="166" width="26" height="26" rx="3" fill="var(--b-green)"/>
+<text x="540" y="186" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Green</text>
+<text x="540" y="212" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Aéras</tspan> · 3 rounds</text>
+<rect x="500" y="244" width="26" height="26" rx="3" fill="var(--b-yellow)"/>
+<text x="540" y="264" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Yellow</text>
+<text x="540" y="290" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Líthos</tspan> · 4 rounds</text>
+<rect x="500" y="322" width="26" height="26" rx="3" fill="var(--b-red)"/>
+<text x="540" y="342" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Red</text>
+<text x="540" y="368" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Photia</tspan> · 5 rounds</text>
+<text x="380.0" y="471" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-style="italic" font-size="17" fill="var(--muted)">After round 3: Blue and Green are full; Yellow and Red are still filling</text>
+</svg>
