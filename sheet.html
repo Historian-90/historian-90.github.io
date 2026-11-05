@@ -1515,7 +1515,7 @@ function rollInitiative(){
 }
 $("btnInit").onclick = rollInitiative;
 $("btnIniStat").onclick = rollInitiative;
-$("btnEndCombat").onclick = () => { if (window.__iniRolls && cur) delete window.__iniRolls[cur.id]; $("btnIniStat").textContent = "Roll"; BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); cur.combat.used={action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.conc.forEach((c,i)=>{ if (c.spell.trim()) endConc(i, "combat over"); }); BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); concNote = ""; renderCombat(); scheduleSave(); };
+$("btnEndCombat").onclick = () => { if (window.__iniRolls && cur) delete window.__iniRolls[cur.id]; $("btnIniStat").textContent = "Roll"; try { window.agonOBR && window.agonOBR.endCombat && window.agonOBR.endCombat(cur); } catch(_){} BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); cur.combat.used={action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.conc.forEach((c,i)=>{ if (c.spell.trim()) endConc(i, "combat over"); }); BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); concNote = ""; renderCombat(); scheduleSave(); };
 $("btnDawn").onclick = () => { cur.combat.daily = {}; renderAff(); renderCombat(); scheduleSave(); };
 document.addEventListener("change", e => { const el = e.target; if (!cur || !el.dataset || el.dataset.s === undefined || el.dataset.f !== "name") return; const k = spellKey(el.value); if (!k) return; const row = cur.spells[+el.dataset.s]; Object.assign(row, spellEntry(k), {element: row.element || spellEntry(k).element}); renderSpells(); renderCombat(); scheduleSave(); });
 $("spellPick").onchange = e => { const k = e.target.value; if (!k || !SPELLS[k]) return; cur.spells.push(spellEntry(k)); renderSpells(); renderCombat(); scheduleSave(); };
@@ -2397,6 +2397,6 @@ function partySnapshot(c){
 window.agonSheet = { current: () => cur, derive: c => derive(c), snapshot: c => partySnapshot(c) };
 })();
 </script>
-<script type="module" src="bridge.js?v=1.4.0"></script>
+<script type="module" src="bridge.js?v=1.4.1"></script>
 </body>
 </html>
