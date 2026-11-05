@@ -267,6 +267,26 @@ button.chip { cursor: pointer; background: transparent; }
 .band > .sub, .band > [data-useband] { justify-self: center; text-align: center; width: 46px; }
 .band > [data-useband] { padding: 2px 0; border-color: var(--bc); color: var(--bc); font-weight: 600; }
 .band > [data-useband]:hover { background: var(--bc); color: var(--panel); }
+.tg { font-family: var(--entry); font-size: 13px; }
+.tgtop { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.tgnum { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.tgnum b { font-family: var(--display); font-size: 26px; color: var(--ink); font-weight: 700; margin-right: 2px; }
+.tgzone { font-weight: 600; color: var(--zc); }
+.tgzone small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.tgbar { position: relative; height: 16px; border-radius: 3px; overflow: hidden; display: flex; border: 1px solid var(--hair); background: var(--soft); }
+.tgbar .seg { flex: 1; position: relative; border-right: 1px solid var(--hair); }
+.tgbar .seg:last-of-type { border-right: 0; }
+.tgbar .seg::before { content: ""; position: absolute; inset: 0; background: var(--sc); opacity: .16; }
+.tgbar .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--zc); transition: width .2s; }
+.tgbar.over { border-color: var(--b-red); }
+.tgbar.over .fill { background: repeating-linear-gradient(-45deg, var(--b-red) 0 6px, transparent 6px 10px), var(--b-red); }
+.tgscale { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+.tgmeta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.tgmeta b { color: var(--ink); font-weight: 600; }
+.tgctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+.tgctl select { max-width: 190px; }
+.tgctl .tggrp { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; }
+.tgctl .sep { width: 1px; align-self: stretch; background: var(--hair); margin: 0 2px; }
 .carry { width: 90px; color: var(--muted); border-color: var(--hair); font-size: 11px !important; padding: 2px 0 !important; background: transparent; }
 .carry[aria-pressed="true"] { color: var(--ink); border-color: var(--rule); background: var(--soft); }
 .conc { display: grid; gap: 8px; }
@@ -571,7 +591,7 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
       </div>
     </div>
     <div>
-      <h2>Theion Gauge <button type="button" class="ti" data-tip="&lt;p&gt;&lt;b&gt;Next round&lt;/b&gt; fills every band one level and refreshes your turn. Press &lt;b&gt;Use&lt;/b&gt; when you spend a ready band.&lt;/p&gt;&lt;p&gt;A band powering a held spell stays spent and empties when the spell ends.&lt;/p&gt;&lt;p&gt;&lt;b&gt;End combat&lt;/b&gt; empties every band set to Resets. The standard rule carries every band until a Full Rest.&lt;/p&gt;" aria-label="About the Theion Gauge">i</button><span class="grow"></span></h2>
+      <h2>Theion Gauge <button type="button" class="ti" data-tip="&lt;p&gt;Theion is the strain on the string your Sword hangs from. Every spell and active Affinity &lt;b&gt;adds&lt;/b&gt; its band&#x27;s cost: Blue 2 · Green 4 · Yellow 6 · Red 9 (cantrips 0).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Limit&lt;/b&gt; = 12 + your Power points. Going over it is &lt;b&gt;Overreach&lt;/b&gt;: an Endurance Trial, TN 12 + 2 per point over (a Close Call counts). On a Failure you still cast, but take damage equal to the overage and mark a &lt;b&gt;Fray&lt;/b&gt; (−2 Limit until a Full Rest).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Next round&lt;/b&gt;: your gauge settles by your Intuition points (minimum 1; Medium armor −1, Heavy −2), then each held spell adds 1.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Quicken&lt;/b&gt;: +2 Theion to cast Spinthēr or a Blue spell as your Minor Action, once per turn.&lt;/p&gt;&lt;p&gt;Out of combat the gauge settles about as fast: &lt;b&gt;End combat&lt;/b&gt; and rests empty it.&lt;/p&gt;" aria-label="About the Theion Gauge">i</button><span class="grow"></span></h2>
       <div id="theion"></div>
       <div class="rowbtns">
         <button type="button" id="btnInit">Roll initiative</button>
@@ -579,11 +599,11 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
         <button type="button" id="btnEndCombat">End combat</button>
         <button type="button" id="btnShortRest">Short Rest</button>
         <button type="button" id="btnFullRest">Full Rest</button>
-        <button type="button" class="ti" data-tip="&lt;p&gt;&lt;b&gt;Short Rest&lt;/b&gt;: recover half the HP you've lost (needs a medical kit or healing magic).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Full Rest&lt;/b&gt; (about half a day): empties the Theion Gauge, refills Tyche's Favor, and restores HP (with a medical kit or healing magic).&lt;/p&gt;" aria-label="About rests" style="align-self:center">i</button>
+        <button type="button" class="ti" data-tip="&lt;p&gt;&lt;b&gt;Short Rest&lt;/b&gt;: recover half the HP you've lost (needs a medical kit or healing magic).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Full Rest&lt;/b&gt; (about half a day): clears your Frays, refills Tyche's Favor, and restores HP (with a medical kit or healing magic).&lt;/p&gt;&lt;p&gt;Either rest leaves your Theion Gauge at 0.&lt;/p&gt;" aria-label="About rests" style="align-self:center">i</button>
       </div>
     </div>
     <div>
-      <h2>Concentration <button type="button" class="ti" data-tip="Offensive spells cost your Action each turn to hold; Defensive spells cost your Minor Action. Holding takes a hand and halves your Speed. Two held spells must use different bands." aria-label="About Concentration">i</button><span class="grow"></span></h2>
+      <h2>Concentration <button type="button" class="ti" data-tip="Offensive spells cost your Action each turn to hold; Defensive spells cost your Minor Action. Holding takes a hand and halves your Speed, and each held spell adds 1 Theion every round." aria-label="About Concentration">i</button><span class="grow"></span></h2>
       <div class="conc" id="concList"></div>
       <div class="warnline" id="concWarn"></div>
       <h2 class="gap">Boons &amp; Curses <button type="button" class="ti" data-tip="&lt;p&gt;Tap a status to turn it on or off. Active ones show as icons on your linked token and on your Party card.&lt;/p&gt;&lt;p&gt;A curse lands when a Hit (not a Graze) also meets your &lt;b&gt;Resistance&lt;/b&gt; (10 + your points in the listed trait). Default duration: until the end of your next turn. The same status doesn't stack.&lt;/p&gt;" aria-label="About Boons and Curses">i</button><span class="grow"></span><button type="button" class="small" id="btnStatusClear">Clear all</button></h2>
@@ -627,7 +647,7 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
   <!-- page two -->
   <div class="pagetwo">
     <section class="panel keyed" aria-label="Spell List">
-      <h2>Spell List <button type="button" class="ti" data-tip="&lt;p&gt;Spinthēr is at will. Other spells need their Theion band.&lt;/p&gt;&lt;p&gt;Damaging spells roll d20 + Intuition to Hit. A Graze (1–4 short of the target's Evasion) still deals your Power modifier (Spinthēr: your Power points).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Offensive Concentration&lt;/b&gt;: cast and hold with your Action. &lt;b&gt;Defensive&lt;/b&gt;: hold with your Minor Action (Aspis also casts with one). Holding takes a hand and halves your Speed. Two held spells must use different bands.&lt;/p&gt;" aria-label="About spells">i</button><span class="grow"></span></h2>
+      <h2>Spell List <button type="button" class="ti" data-tip="&lt;p&gt;Spinthēr costs no Theion. Other spells add their band's cost to your gauge: Blue 2 · Green 4 · Yellow 6 · Red 9.&lt;/p&gt;&lt;p&gt;Damaging spells roll d20 + Intuition to Hit. A Graze (1–4 short of the target's Evasion) still deals your Power modifier (Spinthēr: your Power points).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Offensive Concentration&lt;/b&gt;: cast and hold with your Action. &lt;b&gt;Defensive&lt;/b&gt;: hold with your Minor Action (Aspis also casts with one). Holding takes a hand and halves your Speed. Two held spells must use different bands.&lt;/p&gt;" aria-label="About spells">i</button><span class="grow"></span></h2>
       <div class="tablewrap">
         <table>
           <thead><tr><th>Spell</th><th>Element</th><th>Band</th><th>Duration</th><th>Effect</th><th></th></tr></thead>
@@ -671,6 +691,7 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
       <label class="sr" for="castSpell">Spell</label><select id="castSpell"></select>
       <label class="atkev" for="castEva">Target Evasion <input id="castEva" type="number" min="0" max="30" value="10"></label>
     </div>
+    <label class="sub" id="quickWrap" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input type="checkbox" id="castQuick"> Quicken: +2 Theion, cast as your Minor Action (once per turn)</label>
     <div class="sub" id="castInfo"></div>
     <div class="rowbtns"><button type="button" class="primary" id="btnCast">Cast</button></div>
   </div>
@@ -878,8 +899,11 @@ const BANDS = [ ["blue","Blue",2], ["green","Green",3], ["yellow","Yellow",4], [
 const LEVELS = [0,100,200,400,700,1200,2000,3300,5400,8800,12700,17300,22700,28900,36000];
 const ARMOR = { none:{hp:0,pen:0,dur:0,name:"Unarmored",txt:"No HP. Weal on Agility Trials. Rested Bonus: +10% Exp until next Full Rest."},
                 light:{hp:5,pen:0,dur:2,name:"Light",txt:"+5 HP. No Evasion penalty."},
-                medium:{hp:15,pen:1,dur:4,name:"Medium",txt:"+15 HP. Evasion −1."},
-                heavy:{hp:25,pen:2,dur:6,name:"Heavy",txt:"+25 HP. Evasion −2. Woe on Agility Trials."} };
+                medium:{hp:15,pen:1,tax:1,dur:4,name:"Medium",txt:"+15 HP. Evasion −1 (Strength 3+ ignores it). Theion settles 1 slower."},
+                heavy:{hp:25,pen:2,tax:2,dur:6,name:"Heavy",txt:"+25 HP. Evasion −2 (Strength 3 ignores 1, Strength 4 ignores both). Woe on Agility Trials. Theion settles 2 slower."} };
+// Theion (Part III, Theion & the Limits of Magic): cost added per band; Limit = 12 + Power pts (−2 per Fray); settles by Intuition pts each round.
+const THEION_COST = { none:0, blue:2, green:4, yellow:6, red:9 };
+const ZONES = [ ["blue","Blue","Nothing shows."], ["green","Green","Your eyes glow with your element."], ["yellow","Yellow","The air around you shimmers; anyone nearby can feel it."], ["red","Red","The string trembles. Divine sight can see it; Frenzied sense it."] ];
 const ATTRS = [
   { key:"soul", name:"SOUL", traits:["intuition","power","creativity"] },
   { key:"body", name:"BODY", traits:["agility","strength","endurance"] },
@@ -910,7 +934,7 @@ function blank(kind){
     inventory:"",
     spells:["Spinthēr","Belos","Aspis","Potamos"].map(spellEntry),
     bio:"",
-    combat:{ used:{action:false,minor:false,move:false,reaction:false,dash:false}, theion:{blue:0,green:0,yellow:0,red:0}, carry:{blue:true,green:true,yellow:true,red:true},
+    combat:{ used:{action:false,minor:false,move:false,reaction:false,dash:false}, theion:{blue:0,green:0,yellow:0,red:0}, carry:{blue:true,green:true,yellow:true,red:true}, tension:0, frays:0,
              conc:[{spell:"",band:"",type:"",paid:false},{spell:"",band:"",type:"",paid:false}], daily:{} },
     linkId:"", sample:false, updated:Date.now()
   };
@@ -928,7 +952,7 @@ function samples(){
   theo.forms=[Object.assign(formObj("Kestrel K-9"),{loaded:"11",stock:"23"}), formObj("Antillosian Gladius", false)];
   theo.combat.form="Kestrel K-9"; theo.combat.wield=true;
   theo.spells.forEach(s=>s.element="Fire / Light");
-  theo.combat.theion.red=3;
+  theo.combat.tension=5;
   const caleo = blank("aegis");
   Object.assign(caleo,{ id:"sample-caleo", sample:true, name:"Caleo", parent:"Nyx", favored:"", partner:"Theodosis", faction:"Antillos", exp:50,
     obol:{ant:4160,the:0,tyr:0,peg:0}, didra:0,
@@ -941,7 +965,7 @@ function samples(){
   caleo.forms=[formObj("Kestrel K-9"), formObj("Antillosian Gladius", false)];
   caleo.combat.form="Kestrel K-9";
   caleo.spells.forEach(s=>s.element="Ice / Shadow");
-  caleo.combat.theion.red=3;
+  caleo.combat.tension=4;
   theo.linkId = caleo.id; caleo.linkId = theo.id;
   return [theo, caleo];
 }
@@ -981,7 +1005,7 @@ function normalize(c){
   out.spells = Array.isArray(c.spells) ? c.spells.map(s=>Object.assign({name:"",element:"",band:"blue",dur:"Instant",effect:""},s)) : blank().spells;
   const cb = blank().combat; const cc = c.combat||{};
   out.combat = { used:Object.assign(cb.used, cc.used||{}), theion:Object.assign(cb.theion, cc.theion||{}), carry:Object.assign(cb.carry, cc.carry||{}),
-                 conc:[0,1].map(i=>Object.assign({spell:"",band:"",type:"",paid:false}, (cc.conc||[])[i]||{})), daily:Object.assign({}, cc.daily||{}), luck:Object.assign({used:0, owed:false}, cc.luck||{}), wield: !!cc.wield, reacts: +cc.reacts||0, form: String(cc.form||"") };
+                 conc:[0,1].map(i=>Object.assign({spell:"",band:"",type:"",paid:false}, (cc.conc||[])[i]||{})), daily:Object.assign({}, cc.daily||{}), tension: Math.max(0, +cc.tension||0), frays: Math.max(0, +cc.frays||0), quick: !!cc.quick, luck:Object.assign({used:0, owed:false}, cc.luck||{}), wield: !!cc.wield, reacts: +cc.reacts||0, form: String(cc.form||"") };
   return out;
 }
 
@@ -990,13 +1014,15 @@ function derive(c){
   const t=c.traits, lvl=levelFor(n(c.exp)), arm=ARMOR[c.armor.cls]||ARMOR.none;
   const hpMax = 30 + 2*(lvl-1) + arm.hp + 2*n(t.endurance);
   const speed = 9 + n(t.agility);
-  const eva = 10 + Math.max(0, n(t.agility) - arm.pen);
+  const waiver = n(t.strength) >= 4 ? 2 : n(t.strength) >= 3 ? 1 : 0, pen = Math.max(0, (arm.pen||0) - waiver);
+  const eva = 10 + Math.max(0, n(t.agility) - pen);
+  const frays = n(c.combat && c.combat.frays), limit = Math.max(1, 12 + n(t.power) - 2*frays), settle = Math.max(1, n(t.intuition) - (arm.tax||0));
   const affBonus = Object.values(c.affPips||{}).filter(Boolean).length;
   const totalPts = Object.values(t).reduce((a,b)=>a+n(b),0) - affBonus;
   const budget = 4 + (lvl-1);
   const held = ((c.combat&&c.combat.conc)||[]).filter(x=>x.spell && x.spell.trim());
   const base = Math.max(0, speed - n(c.speed.loss));
-  return { affBonus, lvl, hpMax, speed, held, actual: held.length ? Math.floor(base/2) : base, eva, totalPts, budget, arm,
+  return { affBonus, lvl, hpMax, speed, held, actual: held.length ? Math.floor(base/2) : base, eva, totalPts, budget, arm, pen, waiver, frays, limit, settle,
            ini: 2*n(t.agility), next: lvl<15 ? LEVELS[lvl] : null };
 }
 
@@ -1187,7 +1213,7 @@ function renderStats(d){
   $("spdVal").closest(".stat").classList.toggle("halved", d.held.length > 0);
   $("evaVal").textContent = d.eva;
   $("evaRange").textContent = `${d.eva}+ to hit you`;
-  $("evaWhy").textContent = `${n(cur.traits.agility)} Agi${d.arm.pen?` − ${d.arm.pen} armor`:""}`;
+  $("evaWhy").textContent = `${n(cur.traits.agility)} Agi${d.pen?` − ${d.pen} armor`:""}${d.arm.pen && d.waiver ? ` (Str carries ${Math.min(d.waiver, d.arm.pen)})` : ""}`;
   $("iniVal").textContent = "+" + d.ini;
   { const r = cur && window.__iniRolls && window.__iniRolls[cur.id]; const b = $("btnIniStat"); if (b) b.textContent = r ? `Rolled ${r}` : "Roll"; }
   $("expNext").textContent = d.next!==null ? `Lv ${d.lvl} · next at ${d.next.toLocaleString()}` : `Lv 15 (max)`;
@@ -1234,11 +1260,48 @@ let concNote = "";
 function endConc(i, why){
   const c = cur.combat.conc[i]; if (!c || !c.spell.trim()) return "";
   const name = c.spell, band = c.band;
-  if (band) cur.combat.theion[band] = 0;
   cur.combat.conc[i] = {spell:"",band:"",type:"",paid:false};
-  const msg = `${name} ended${why?` (${why})`:""}.${band?` ${band[0].toUpperCase()+band.slice(1)} band emptied.`:""}`;
+  const msg = `${name} ended${why?` (${why})`:""}.`;
   logEntry("miss", `${esc(name)} ended`, [esc(msg)]);
   return msg;
+}
+function zoneOf(t, L){ if (t > L) return {k:"red", label:"Overreaching", fx:`${t - L} over your Limit.`}; const q = t <= L/4 ? 0 : t <= L/2 ? 1 : t <= 3*L/4 ? 2 : 3; const z = ZONES[q]; return {k:z[0], label: t === 0 ? "Calm" : z[1], fx: z[2]}; }
+function activeAffs(){ return cur.affinities.map(a=>a.name.trim()).filter(x => { const m = AFF_TEXT[x] && AFF_TEXT[x].meta; const b = m && String(m["Theion Band"]||"").toLowerCase(); return b && THEION_COST[b] !== undefined && b !== "none"; }); }
+function affBand(x){ const m = AFF_TEXT[x] && AFF_TEXT[x].meta; return String((m && m["Theion Band"])||"").toLowerCase(); }
+function renderGauge(){
+  const d = derive(cur), L = d.limit, t = n(cur.combat.tension), z = zoneOf(t, L);
+  const pct = Math.min(100, Math.round(100 * t / L)), held = cur.combat.conc.filter(c=>c.spell.trim()).length;
+  const q = [0, L/4, L/2, 3*L/4, L].map(x => Math.floor(x));
+  const affs = activeAffs(), prevAff = ($("affUse")||{}).value;
+  $("theion").innerHTML = `<div class="tg" style="--zc:var(--b-${z.k})">
+    <div class="tgtop"><span class="tgnum"><b>${t}</b>/ ${L} Limit</span><span class="tgzone">${z.label} <small>${esc(z.fx)}</small></span></div>
+    <div class="tgbar${t > L ? " over" : ""}" role="meter" aria-valuemin="0" aria-valuemax="${L}" aria-valuenow="${t}" aria-label="Theion ${t} of ${L}">
+      ${ZONES.map(([k]) => `<span class="seg" style="--sc:var(--b-${k})"></span>`).join("")}<span class="fill" style="width:${pct}%"></span></div>
+    <div class="tgscale">${q.map(x=>`<span>${x}</span>`).join("")}</div>
+    <div class="tgmeta">Settles <b>${d.settle}</b> per round${d.arm.tax ? ` (${esc(d.arm.name)} armor −${d.arm.tax})` : ""}${held ? ` · holding adds <b>${held}</b>` : ""} · Frays <b>${d.frays}</b>${d.frays ? ` (Limit −${2*d.frays})` : ""}</div>
+    <div class="tgctl">
+      <button type="button" class="small" data-tension="-1" title="Lower the gauge by 1">−1</button><button type="button" class="small" data-tension="1" title="Raise the gauge by 1 (a Historian's ruling, a long ritual)">+1</button>
+      <span class="sep"></span>
+      ${affs.length ? `<select id="affUse" aria-label="Affinity to use">${affs.map(x=>`<option value="${esc(x)}"${x===prevAff?" selected":""}>${esc(x)} (${affBand(x)[0].toUpperCase()+affBand(x).slice(1)} ${THEION_COST[affBand(x)]})</option>`).join("")}</select><button type="button" class="small" id="btnAffUse">Use Affinity</button><span class="sep"></span>` : ""}
+      <span class="tggrp"><span class="sub">Frays</span><button type="button" class="small" data-fray="-1" title="Remove a Fray">−</button><button type="button" class="small" data-fray="1" title="Mark a Fray">+</button></span>
+    </div></div>`;
+}
+// Add Theion for a spell or Affinity; roll Overreach if it goes past the Limit. Returns log lines.
+function addTheion(cost, what){
+  const d = derive(cur), L = d.limit, before = n(cur.combat.tension), after = before + cost, lines = [];
+  cur.combat.tension = after;
+  if (!cost) return lines;
+  if (after <= L) { lines.push(`<span class="lx">Theion ${before} → ${after} of ${L} (+${cost}).</span>`); return lines; }
+  const over = after - L, tn = 12 + 2*over;
+  const {res, lines: tl, r} = advancedRoll("endurance", false, false, tn);
+  lines.push(`<span class="lx">Theion ${before} → ${after} of ${L} (+${cost}): Overreach by ${over}. Endurance Trial:</span>`, ...tl);
+  if (r.nat === 20) { cur.agathos = n(cur.agathos) + 1; renderFields(); lines.push(`<span class="okline">Natural 20: you gain an Agathós Daemon (now ${cur.agathos}).</span>`); }
+  if (res.ok) lines.push(`<span class="okline">The string holds.</span>`);
+  else {
+    cur.combat.frays = n(cur.combat.frays) + 1; cur.hp.current = n(cur.hp.current) - over; renderFields(); renderDerived();
+    lines.push(`<span class="warnline">The string frays: you take ${over} damage (HP ${cur.hp.current}) and mark a Fray (${cur.combat.frays}; Limit now ${derive(cur).limit}).${cur.combat.frays >= 3 ? " Three Frays today: the Historian shows you the Sword above you." : ""}</span>`);
+  }
+  return lines;
 }
 function renderCombat(){
   renderAttack(); renderStats(derive(cur));
@@ -1248,20 +1311,14 @@ function renderCombat(){
   $("aegisTurnNote").textContent = cur.kind==="aegis"
     ? "Changing back to human form on your own spends this turn's Minor Action and starts your turn right after your master. One turn per round."
     : "Commanding your Aegis to transform costs your Minor Action. It acts right after you, with no Initiative roll.";
-  const T = cur.combat.theion;
-  $("theion").innerHTML = BANDS.map(([k,l,max]) => {
-    const v = Math.min(max, Math.max(0, n(T[k]))), ready = v>=max;
-    const pips = Array.from({length:max},(_,i)=>`<span class="${i<v?"on":""}"></span>`).join("");
-    const hb = heldBand(k);
-    return `<div class="band${ready&&!hb?" ready":""}" style="--bc:var(--b-${k})"><span class="bname">${l}</span><div class="bandpips" aria-label="${l} band ${v} of ${max}">${pips}</div>${hb?`<span class="sub" title="This band powers ${esc(hb.spell)} and empties when the spell ends">held</span>`:ready?`<button type="button" class="small" data-useband="${k}">Use</button>`:`<span class="sub">${v}/${max}</span>`}<button type="button" class="small carry" data-carry="${k}" aria-pressed="${!!cur.combat.carry[k]}" title="Keep this band's Theion when combat ends">${cur.combat.carry[k]?"Carries over":"Resets"}</button></div>`;
-  }).join("");
+  renderGauge();
   const C = cur.combat.conc;
   const CS = concSpells();
   $("concList").innerHTML = C.map((c,i) => {
     const other = C[1-i];
     const opts = `<option value="">${CS.length ? `Held spell ${i+1}: none` : "No Concentration spells in your Spell List"}</option>` +
-      CS.map(sp => { const clash = other.spell.trim() && (other.spell === sp.name || other.band === sp.band);
-        return `<option value="${esc(sp.name)}"${sp.name===c.spell?" selected":""}${clash&&sp.name!==c.spell?" disabled":""}>${esc(sp.name)}${clash&&sp.name!==c.spell?" (band in use)":""}</option>`; }).join("") +
+      CS.map(sp => { const clash = other.spell.trim() && other.spell === sp.name;
+        return `<option value="${esc(sp.name)}"${sp.name===c.spell?" selected":""}${clash&&sp.name!==c.spell?" disabled":""}>${esc(sp.name)}${clash&&sp.name!==c.spell?" (already held)":""}</option>`; }).join("") +
       (c.spell && !CS.some(sp=>sp.name===c.spell) ? `<option selected>${esc(c.spell)}</option>` : "");
     const has = !!c.spell.trim();
     const bandChip = has && c.band ? `<span class="chip ${c.band}">${c.band[0].toUpperCase()+c.band.slice(1)}</span>` : "";
@@ -1271,14 +1328,14 @@ function renderCombat(){
       <span class="concmeta">${bandChip}${typeTxt}</span>
       <span class="concbtns">
         <button type="button" class="small${c.paid?" paid":""}" data-hold="${i}" ${has&&!c.paid?"":"disabled"} title="Pay this turn's upkeep: Action for Offensive, Minor Action for Defensive">${c.paid?"Paid ✓":"Hold"}</button>
-        <button type="button" class="small" data-release="${i}" ${has?"":"disabled"} title="End the spell now; its band empties">End</button>
+        <button type="button" class="small" data-release="${i}" ${has?"":"disabled"} title="End the spell now">End</button>
       </span>
     </div>`; }).join("");
   const held = C.filter(c=>c.spell.trim());
   let w = "";
   if (held.length) {
     const unpaid = held.filter(c=>!c.paid).map(c=>c.spell);
-    w = `<span class="sub">Holding ${held.length}: ${held.length} hand${held.length>1?"s":""} busy, half Speed.</span>` +
+    w = `<span class="sub">Holding ${held.length}: ${held.length} hand${held.length>1?"s":""} busy, half Speed, +${held.length} Theion each round.</span>` +
         (unpaid.length ? ` <span class="warnline">Pay to Hold ${unpaid.map(esc).join(" and ")} this turn, or ${unpaid.length>1?"they end":"it ends"} at Next round.</span>` : "");
   }
   if (concNote) w = `<span class="warnline">${esc(concNote)}</span><br>` + w;
@@ -1351,7 +1408,7 @@ function renderForms(){
   document.querySelectorAll('[data-open="attack"],[data-open="cast"]').forEach(b => { b.disabled = !!held; b.title = held ? "You're being wielded: return to human form to act on your own" : ""; });
 }
 function renderSpells(){
-  const bandOpts = v => [["none","At will"],...BANDS.map(([k,l])=>[k,l])].map(([k,l])=>`<option value="${k}"${v===k?" selected":""}>${l}</option>`).join("");
+  const bandOpts = v => [["none","None (0)"],...BANDS.map(([k,l])=>[k,`${l} (${THEION_COST[k]})`])].map(([k,l])=>`<option value="${k}"${v===k?" selected":""}>${l}</option>`).join("");
   const durOpts = v => [["Instant","Instant"],["Offensive","Conc. (Offensive)"],["Defensive","Conc. (Defensive)"],["Other","Other"]].map(([k,l])=>`<option value="${k}"${v===k?" selected":""}>${l}</option>`).join("");
   $("splBody").innerHTML = cur.spells.map((s,i) => `<tr>
     <td><input type="text" data-s="${i}" data-f="name" value="${esc(s.name)}" aria-label="Spell name"></td>
@@ -1439,7 +1496,9 @@ document.addEventListener("click", e => {
     U[k] = !U[k]; renderCombat(); scheduleSave(); return;
   }
   if (b.dataset.carry) { const k=b.dataset.carry; cur.combat.carry[k] = !cur.combat.carry[k]; renderCombat(); scheduleSave(); return; }
-  if (b.dataset.useband) { cur.combat.theion[b.dataset.useband] = 0; renderCombat(); scheduleSave(); return; }
+  if (b.dataset.tension) { cur.combat.tension = Math.max(0, n(cur.combat.tension) + +b.dataset.tension); renderCombat(); renderAttack(); scheduleSave(); return; }
+  if (b.dataset.fray) { cur.combat.frays = Math.max(0, n(cur.combat.frays) + +b.dataset.fray); renderCombat(); renderAttack(); scheduleSave(); return; }
+  if (b.id === "btnAffUse") { useAffinity($("affUse").value); return; }
   if (b.dataset.luck !== undefined) { const L = cur.combat.luck, i = +b.dataset.luck; L.used = n(L.used) > i ? i : i+1; if (L.used >= 3) L.owed = true; renderCombat(); scheduleSave(); return; }
   if (b.dataset.nemesis !== undefined) { const L = cur.combat.luck; if (L.owed) { L.owed = false; L.paid = true; } renderCombat(); scheduleSave(); return; }
   if (b.dataset.luckrest !== undefined) { const L = cur.combat.luck; if (!L.owed) { L.used = 0; L.paid = false; } renderCombat(); scheduleSave(); return; }
@@ -1462,8 +1521,10 @@ document.addEventListener("keydown", e => {
 $("btnNextRound").onclick = () => { cur.combat.riposte = false;
   const ended = [], justEmptied = new Set();
   cur.combat.conc.forEach((c,i) => { if (!c.spell.trim()) return; if (!c.paid) { justEmptied.add(c.band); ended.push(endConc(i, "upkeep not paid")); } else c.paid = false; });
-  BANDS.forEach(([k,,max]) => { if (!heldBand(k) && !justEmptied.has(k)) cur.combat.theion[k] = Math.min(max, n(cur.combat.theion[k])+1); });
-  cur.combat.used = {action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.reacts = 0;
+  { const d = derive(cur), before = n(cur.combat.tension), held = cur.combat.conc.filter(c=>c.spell.trim()).length;
+    cur.combat.tension = Math.max(0, before - d.settle) + held;
+    if (before || held) ended.push(`Theion settles ${before} → ${cur.combat.tension}${held ? ` (−${d.settle}, +${held} held)` : ` (−${d.settle})`}.`); }
+  cur.combat.used = {action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.reacts = 0; cur.combat.quick = false;
   concNote = ended.join(" ");
   renderCombat(); scheduleSave();
 };
@@ -1515,7 +1576,7 @@ function rollInitiative(){
 }
 $("btnInit").onclick = rollInitiative;
 $("btnIniStat").onclick = rollInitiative;
-$("btnEndCombat").onclick = () => { if (window.__iniRolls && cur) delete window.__iniRolls[cur.id]; $("btnIniStat").textContent = "Roll"; try { window.agonOBR && window.agonOBR.endCombat && window.agonOBR.endCombat(cur); } catch(_){} BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); cur.combat.used={action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.conc.forEach((c,i)=>{ if (c.spell.trim()) endConc(i, "combat over"); }); BANDS.forEach(([k])=>{ if (!cur.combat.carry[k]) cur.combat.theion[k]=0; }); concNote = ""; renderCombat(); scheduleSave(); };
+$("btnEndCombat").onclick = () => { if (window.__iniRolls && cur) delete window.__iniRolls[cur.id]; $("btnIniStat").textContent = "Roll"; try { window.agonOBR && window.agonOBR.endCombat && window.agonOBR.endCombat(cur); } catch(_){} cur.combat.used={action:false,minor:false,move:false,reaction:false,dash:false}; cur.combat.quick = false; cur.combat.conc.forEach((c,i)=>{ if (c.spell.trim()) endConc(i, "combat over"); }); if (n(cur.combat.tension)) { logEntry("", "Theion settles", [`A minute of calm: your gauge settles from ${cur.combat.tension} to 0.`]); cur.combat.tension = 0; } concNote = ""; renderCombat(); renderAttack(); scheduleSave(); };
 $("btnDawn").onclick = () => { cur.combat.daily = {}; renderAff(); renderCombat(); scheduleSave(); };
 document.addEventListener("change", e => { const el = e.target; if (!cur || !el.dataset || el.dataset.s === undefined || el.dataset.f !== "name") return; const k = spellKey(el.value); if (!k) return; const row = cur.spells[+el.dataset.s]; Object.assign(row, spellEntry(k), {element: row.element || spellEntry(k).element}); renderSpells(); renderCombat(); scheduleSave(); });
 $("spellPick").onchange = e => { const k = e.target.value; if (!k || !SPELLS[k]) return; cur.spells.push(spellEntry(k)); renderSpells(); renderCombat(); scheduleSave(); };
@@ -1540,7 +1601,7 @@ function openRest(full){
   const kitsInInv = /medical kit/i.test(cur.inventory || "");
   const opt = (id, label, hint, on) => `<label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0"><input type="checkbox" id="${id}"${on?" checked":""}><span><b>${label}</b>${hint?`<br><span class="sub">${hint}</span>`:""}</span></label>`;
   $("dlgTitle").textContent = full ? "Full Rest" : "Short Rest";
-  $("dlgText").innerHTML = `<p style="margin:0 0 6px">HP ${hp} / ${d.hpMax}${lost ? ` (${lost} lost)` : " (unhurt)"}. ${full ? "A Full Rest is about half a day. It empties your Theion Gauge, ends held spells, and refills Tyche's Favor if Nemesis isn't owed." : "A Short Rest recovers half the HP you've lost."} Recovering HP on a rest takes a <b>medical kit</b> or healing magic.</p>`
+  $("dlgText").innerHTML = `<p style="margin:0 0 6px">HP ${hp} / ${d.hpMax}${lost ? ` (${lost} lost)` : " (unhurt)"}. ${full ? "A Full Rest is about half a day. It empties your Theion Gauge, clears your Frays, ends held spells, and refills Tyche's Favor if Nemesis isn't owed." : "A Short Rest recovers half the HP you've lost."} Recovering HP on a rest takes a <b>medical kit</b> or healing magic.</p>`
     + opt("restKit", "Use a medical kit", `One per character per rest. ${kitsInInv ? "Your inventory lists one; remember to cross it off." : "Your inventory doesn't mention one."}`, kitsInInv && lost > 0)
     + (vit ? opt("restVit", "Vitality", full ? "Your regeneration heals you to full." : "Your regeneration heals you to full on a Short Rest.", lost > 0) : "")
     + (() => { const L = getLinked(), pw = L ? 2*n(L.traits.power) : 0, has = a => !!(L && (L.affinities||[]).some(x => x.name.trim() === a));
@@ -1579,12 +1640,12 @@ function doRest(full){
   cur.combat.conc.forEach((c,i) => { if (c.spell.trim()) endConc(i, "rested"); });
   cur.combat.used = {action:false, minor:false, move:false, reaction:false, dash:false}; cur.combat.reacts = 0; cur.combat.riposte = false; concNote = "";
   if (full) {
-    BANDS.forEach(([k]) => { cur.combat.theion[k] = 0; });
+    cur.combat.tension = 0; cur.combat.frays = 0;
     cur.hp.overheal = 0;
     const L = cur.combat.luck; let luck = "";
     if (L && hasAff("Luck")) { if (L.owed) luck = " Tyche's Favor stays spent: Nemesis is still owed."; else { L.used = 0; L.paid = false; luck = " Tyche's Favor refilled."; } }
-    lines.push(`<span class="lx">Theion Gauge emptied, held spells ended.${luck} Daily Affinities refresh at Dawn.</span>`);
-  } else lines.push(`<span class="lx">Held spells ended. Your Theion Gauge carries over until a Full Rest.</span>`);
+    lines.push(`<span class="lx">Theion Gauge empty, Frays cleared, held spells ended.${luck} Daily Affinities refresh at Dawn.</span>`);
+  } else { cur.combat.tension = 0; lines.push(`<span class="lx">Held spells ended and your Theion Gauge has settled to 0.${n(cur.combat.frays) ? ` Frays stay until a Full Rest (${cur.combat.frays}).` : ""}</span>`); }
   logEntry("hit", full ? "Full Rest" : "Short Rest", lines);
   $("dlgText").innerHTML = lines.map(l => `<p style="margin:4px 0">${l}</p>`).join(""); $("dlgBtns").innerHTML = "";
   const ok = document.createElement("button"); ok.type = "button"; ok.className = "primary"; ok.textContent = "Done"; ok.onclick = closeDlg; $("dlgBtns").appendChild(ok);
@@ -1809,24 +1870,26 @@ function renderAttack(){
   const sp = cur.spells[+cs.value];
   let cinfo = "", ok = !!sp;
   if (sp) {
-    const k = spellCat(sp), atWill = sp.band === "none";
-    const max = (BANDS.find(b=>b[0]===sp.band)||[0,0,99])[2], lvl = n(cur.combat.theion[sp.band]);
-    const minor = spellKey(sp.name) === "Aspis";
+    const k = spellCat(sp), atWill = sp.band === "none" || !THEION_COST[sp.band];
+    const baseMinor = spellKey(sp.name) === "Aspis";
+    const canQuick = !baseMinor && (atWill || sp.band === "blue");
+    $("quickWrap").hidden = !canQuick; if (!canQuick) $("castQuick").checked = false;
+    const quick = canQuick && $("castQuick").checked, minor = baseMinor || quick;
     const cost = minor ? "Minor Action" : "Action";
-    const ready = atWill || lvl >= max;
-    cinfo = `${atWill ? "At will (no Theion)" : `${sp.band[0].toUpperCase()+sp.band.slice(1)} band ${ready?"<b>ready</b>":`${lvl}/${max}`}`} · costs your ${cost}`;
+    const th = (THEION_COST[sp.band] || 0) + (quick ? 2 : 0), d = derive(cur), t = n(cur.combat.tension), after = t + th;
+    cinfo = `${th ? `+${th} Theion${quick ? " (Quickened)" : ""}: gauge ${t} → ${after} of ${d.limit}` : "No Theion (cantrip)"} · costs your ${cost}`;
     if (k) cinfo += ` · ${spellHowTxt(k)}`;
     if (k && n(k.pmin) > n(cur.traits.power)) cinfo += `<br><span class="warnline">Needs Power ${k.pmin} to learn.</span>`;
-    const hb = atWill ? null : heldBand(sp.band), isConc = sp.dur === "Offensive" || sp.dur === "Defensive";
-    if (hb) { ok = false; cinfo += `<br><span class="warnline">The ${sp.band} band is powering ${esc(hb.spell)}. End it first.</span>`; }
-    else if (!ready) { ok = false; cinfo += `<br><span class="warnline">The ${sp.band} band isn't full yet.</span>`; }
+    const isConc = sp.dur === "Offensive" || sp.dur === "Defensive";
+    if (th && after > d.limit) { const over = after - d.limit; cinfo += `<br><span class="warnline">Overreach by ${over}: Endurance Trial TN ${12 + 2*over} (a Close Call counts). On a Failure you still cast, but take ${over} damage and mark a Fray.</span>`; }
+    if (quick && cur.combat.quick) { ok = false; cinfo += `<br><span class="warnline">You've already Quickened a spell this turn.</span>`; }
     if (isConc && cur.combat.conc.every(c=>c.spell.trim())) { ok = false; cinfo += `<br><span class="warnline">Both Concentration slots are in use.</span>`; }
     if ((minor && U.minor) || (!minor && U.action)) { ok = false; cinfo += `<br><span class="warnline">${cost} already used this turn.</span>`; }
   }
   $("castInfo").innerHTML = cinfo;
   $("btnCast").disabled = !ok;
 }
-document.addEventListener("change", e => { if (e.target.id === "atkWeapon" || e.target.id === "castSpell" || e.target.id === "atkElem" || e.target.id === "atkRange") renderAttack(); });
+document.addEventListener("change", e => { if (e.target.id === "atkWeapon" || e.target.id === "castSpell" || e.target.id === "castQuick" || e.target.id === "atkElem" || e.target.id === "atkRange") renderAttack(); });
 document.addEventListener("change", e => {
   const el = e.target; if (!el.dataset || el.dataset.concpick === undefined || !cur) return;
   const i = +el.dataset.concpick, cur0 = cur.combat.conc[i];
@@ -1949,9 +2012,22 @@ function resolveSpell(k, eva, hold){
   if (k.note) lines.push(`<span class="lx">${esc(k.note)}</span>`);
   return {lines, cls};
 }
+function useAffinity(x){
+  const band = affBand(x), cost = THEION_COST[band]; if (!x || !cost) return;
+  const meta = (AFF_TEXT[x] && AFF_TEXT[x].meta) || {}, ct = String(meta["Casting Time"] || "").toLowerCase(), U = cur.combat.used;
+  const slot = ct.includes("minor") ? "minor" : ct.includes("action") ? "action" : "";
+  const lines = [`Use ${esc(x)} (${band[0].toUpperCase()+band.slice(1)} band).`];
+  let cls = "hit";
+  if (slot) { if (U[slot]) { lines.push(`<span class="warnline">Your ${slot === "minor" ? "Minor Action" : "Action"} was already used this turn.</span>`); cls = "con"; } U[slot] = true; }
+  if (DAILY[x]) { if (cur.combat.daily[x]) lines.push(`<span class="warnline">Your free daily use is spent: this use costs an Agathós Daemon.</span>`); cur.combat.daily[x] = true; renderAff(); }
+  lines.push(...addTheion(cost));
+  logEntry(cls, `Affinity: ${esc(x)}`, lines);
+  renderCombat(); renderAttack(); scheduleSave();
+}
 $("btnCast").onclick = () => {
   const sp = cur.spells[+$("castSpell").value]; if (!sp) return;
-  const k = spellCat(sp), minor = spellKey(sp.name) === "Aspis", atWill = sp.band === "none";
+  const k = spellCat(sp), baseMinor = spellKey(sp.name) === "Aspis", atWill = sp.band === "none" || !THEION_COST[sp.band];
+  const quick = !baseMinor && (atWill || sp.band === "blue") && $("castQuick").checked, minor = baseMinor || quick;
   let lines = [], cls = "";
   if (k) ({lines, cls} = resolveSpell(k, $("castEva").value, false));
   else {
@@ -1963,14 +2039,16 @@ $("btnCast").onclick = () => {
     else lines.push("Cast. Resolve the effect with your Historian.");
   }
   if (minor) cur.combat.used.minor = true; else cur.combat.used.action = true;
-  const Band = sp.band[0].toUpperCase()+sp.band.slice(1);
+  if (quick) { cur.combat.quick = true; lines.push(`<span class="lx">Quickened: cast as your Minor Action.</span>`); }
+  lines.push(...addTheion((THEION_COST[sp.band] || 0) + (quick ? 2 : 0)));
   if (sp.dur === "Offensive" || sp.dur === "Defensive") {
     const i = cur.combat.conc.findIndex(c=>!c.spell.trim());
     cur.combat.conc[i] = {spell:sp.name, band:sp.band, type: sp.dur === "Offensive" ? "off" : "def", paid:true};
-    lines.push(`<span class="lx">Now holding ${esc(sp.name)}: one hand busy, half Speed. The ${Band} band stays spent until the spell ends. Pay to Hold it each turn, or it ends at Next round.</span>`);
-  } else if (!atWill) { cur.combat.theion[sp.band] = 0; lines.push(`<span class="lx">${Band} band emptied.</span>`); }
+    lines.push(`<span class="lx">Now holding ${esc(sp.name)}: one hand busy, half Speed, +1 Theion each round. Pay to Hold it each turn, or it ends at Next round.</span>`);
+  }
+  $("castQuick").checked = false;
   concNote = "";
-  logEntry(cls, `Cast ${esc(sp.name)}`, lines);
+  logEntry(cls, `Cast ${esc(sp.name)}${quick ? " (Quickened)" : ""}`, lines);
   renderCombat(); scheduleSave();
 };
 document.addEventListener("click", e => {
@@ -2385,7 +2463,7 @@ function partySnapshot(c){
       dodge: dodgeBonus(), parry: parryBonus(), agathos: n(c.agathos), form: c.combat.form || "",
       traits: Object.fromEntries(TRAITS_ALL.map(k => [k, n(t[k])])), sig: c.signature || "",
       aff: (c.affinities || []).map(a => a.name.trim()).filter(Boolean),
-      theion: Object.fromEntries(BANDS.map(([k,,max]) => [k, [n(c.combat.theion[k]), max]])),
+      gauge: { t: n(c.combat.tension), L: d.limit, frays: d.frays, zone: zoneOf(n(c.combat.tension), d.limit).k },
       conc: (c.combat.conc || []).filter(x => x.spell && x.spell.trim()).map(x => x.spell),
       weapons,
       spells: (c.spells || []).filter(sp => sp.name && sp.name.trim()).map(sp => ({ n: sp.name, b: sp.band || "" })).slice(0, 16),
@@ -2397,6 +2475,6 @@ function partySnapshot(c){
 window.agonSheet = { current: () => cur, derive: c => derive(c), snapshot: c => partySnapshot(c) };
 })();
 </script>
-<script type="module" src="bridge.js?v=1.5.0"></script>
+<script type="module" src="bridge.js?v=1.6.0"></script>
 </body>
 </html>

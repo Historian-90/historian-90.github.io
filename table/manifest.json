@@ -1,6 +1,6 @@
 {
   "name": "Agon Table",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "manifest_version": 1,
   "author": "CJ",
   "description": "Shared Agon roll log and party cards for the whole room. Needs the Agon sheet extension on too.",
@@ -8,7 +8,7 @@
   "action": {
     "title": "Agon Table",
     "icon": "/table/icon.svg",
-    "popover": "/table/index.html?v=1.2.0",
+    "popover": "/table/index.html?v=1.3.0",
     "width": 420,
     "height": 700
   }

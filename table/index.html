@@ -65,6 +65,11 @@ li.hit .sum span { color: #cfe3b2; } li.dh .sum span { color: #f3d48c; } li.con 
 .theion { display: flex; gap: 10px; margin-top: 6px; }
 .band { display: inline-flex; gap: 2px; }
 .band i { width: 9px; height: 7px; border: 1px solid; border-radius: 1px; transform: skewX(-15deg); display: inline-block; }
+.gauge { display: flex; align-items: center; gap: 7px; margin-top: 7px; font: 12px var(--entry); color: var(--muted); }
+.gauge .gbar { flex: 1; height: 6px; border-radius: 3px; background: var(--soft); overflow: hidden; }
+.gauge .gbar i { display: block; height: 100%; }
+.gauge .gnum b { color: var(--ink); font-size: 13px; }
+.gauge .gfray { color: var(--bad); font-weight: 600; }
 .more { border-top: 1px solid var(--hair); margin-top: 9px; padding-top: 4px; font: 13px/1.4 var(--entry); }
 .more h4 { font: 600 11px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin: 10px 0 5px; }
 .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -106,6 +111,6 @@ tr.held td:first-child { color: var(--gold); }
     <p class="empty" id="partyEmpty">No characters yet. A character shows up here once its player opens their Agon sheet, selects their token, and clicks <b>Link to selected token</b>.</p>
   </section>
 </main>
-<script type="module" src="table.js?v=1.4.0"></script>
+<script type="module" src="table.js?v=1.3.0"></script>
 </body>
 </html>
