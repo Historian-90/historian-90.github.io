@@ -2314,9 +2314,37 @@ if (saved && Array.isArray(saved.chars) && saved.chars.length) {
 renderAll();
 setStatus(lsRead() ? "Saved in this browser" : "Not saved yet");
 connect();
-window.agonSheet = { current: () => cur, derive: c => derive(c) };
+// Compact snapshot for the Owlbear party viewer (kept small: it lives in token metadata).
+function partySnapshot(c){
+  const prev = cur; cur = c;
+  try {
+    const d = derive(c), t = c.traits;
+    const weapons = weaponChoices().map(({w}) => {
+      const k = CAT[w.type] || {}, ht = hitTraitFor(w), db = dmgBonusFor(w), steady = hasProp(k,"Steady") ? 2 : 0, sg = ht ? sigBonus(c, ht) : 0;
+      const dd = parseDice(w.dmg), dmg = dd ? `${dd.n}d${dd.s}` : (w.dmg || "?");
+      const crit = (n(w.crit) || 20) - (hasProp(k,"Keen") ? 2 : 0);
+      return { n: w.aegis ? `${w.type} (Aegis form)` : (w.name || w.type), hit: ht ? n(t[ht]) + steady + sg : null, ht: ht ? TRAITNAME(ht) : "",
+               dmg: dmg + (db.mod ? ` + ${db.mod}` : ""), crit, shots: k.shots || 1, guided: !!(w.aegis && c.kind !== "aegis"),
+               ammo: k.mag ? `${n(w.loaded)}/${k.mag} (+${n(w.stock)})` : (k.stock ? `${n(w.stock)} left` : ""), held: !!(w.aegis && w.type === c.combat.form) };
+    }).slice(0, 8);
+    return {
+      v: 1, id: c.id, name: c.name || "Unnamed", kind: c.kind, parent: c.parent || "", favored: c.favored || "", partner: c.partner || "", faction: c.faction || "",
+      lvl: d.lvl, exp: n(c.exp), next: d.next,
+      hp: n(c.hp.current), hpMax: d.hpMax, over: n(c.hp.overheal), eva: d.eva, speed: d.actual, speedMax: d.speed, ini: d.ini, armor: d.arm.name,
+      dodge: dodgeBonus(), parry: parryBonus(), agathos: n(c.agathos), form: c.combat.form || "",
+      traits: Object.fromEntries(TRAITS_ALL.map(k => [k, n(t[k])])), sig: c.signature || "",
+      aff: (c.affinities || []).map(a => a.name.trim()).filter(Boolean),
+      theion: Object.fromEntries(BANDS.map(([k,,max]) => [k, [n(c.combat.theion[k]), max]])),
+      conc: (c.combat.conc || []).filter(x => x.spell && x.spell.trim()).map(x => x.spell),
+      weapons,
+      spells: (c.spells || []).filter(sp => sp.name && sp.name.trim()).map(sp => ({ n: sp.name, b: sp.band || "" })).slice(0, 16),
+      spellHit: n(t.intuition)
+    };
+  } finally { cur = prev; }
+}
+window.agonSheet = { current: () => cur, derive: c => derive(c), snapshot: c => partySnapshot(c) };
 })();
 </script>
-<script type="module" src="bridge.js"></script>
+<script type="module" src="bridge.js?v=1.3.0"></script>
 </body>
 </html>
