@@ -1,6 +1,6 @@
 {
   "name": "Agon",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 1,
   "author": "CJ",
   "description": "Agon character sheet and dice: rolls are shared with the room, and HP shows on linked tokens.",

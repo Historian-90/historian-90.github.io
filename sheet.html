@@ -1601,7 +1601,7 @@ function die(sides){
 function parseDice(expr){ const m = /(\d+)\s*d\s*(\d+)/i.exec(String(expr||"")); return m ? {n:+m[1], s:+m[2]} : null; }
 function rollDice(d){ const r = []; for (let i=0;i<d.n;i++) r.push(die(d.s)); return r; }
 function entryHtml(e){ return `<li class="${e.cls}"><span class="lt">${e.title}</span> <span class="lx">${e.t.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}</span>${e.lines.map(l=>`<div>${l}</div>`).join("")}</li>`; }
-function logEntry(cls, title, lines){ try { window.agonOBR && window.agonOBR.roll(cur && cur.name, title, lines); } catch(_){} const e = {cls, title, lines, t:new Date()}; rollLog.unshift(e); if (rollLog.length > 60) rollLog.pop(); renderLog(); $("rdResult").innerHTML = entryHtml(e) + $("rdResult").innerHTML; }
+function logEntry(cls, title, lines){ try { window.agonOBR && window.agonOBR.roll(cur && cur.name, title, lines, cls); } catch(_){} const e = {cls, title, lines, t:new Date()}; rollLog.unshift(e); if (rollLog.length > 60) rollLog.pop(); renderLog(); $("rdResult").innerHTML = entryHtml(e) + $("rdResult").innerHTML; }
 function renderLog(){
   $("rollLog").innerHTML = rollLog.map(entryHtml).join("");
 }

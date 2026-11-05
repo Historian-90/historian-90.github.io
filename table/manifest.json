@@ -1,0 +1,15 @@
+{
+  "name": "Agon Table",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "author": "CJ",
+  "description": "Shared Agon roll log for the whole room. Needs the Agon sheet extension turned on too.",
+  "icon": "/table/icon.svg",
+  "action": {
+    "title": "Agon Table",
+    "icon": "/table/icon.svg",
+    "popover": "/table/index.html",
+    "width": 420,
+    "height": 700
+  }
+}
