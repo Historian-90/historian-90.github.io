@@ -285,6 +285,15 @@ button.chip { cursor: pointer; background: transparent; }
 .tgmeta b { color: var(--ink); font-weight: 600; }
 .tgctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
 .tgctl select { max-width: 190px; }
+.damocles { --dread: 0; display: flex; flex-direction: column; align-items: center; margin: 14px auto 0; height: 270px; opacity: var(--dread); transition: opacity .6s ease, filter .6s ease; pointer-events: none; }
+.damocles svg { height: 240px; width: auto; transform-origin: 50% 0; filter: drop-shadow(0 0 calc(var(--dread) * 14px) rgba(224,102,80,calc(var(--dread) * .8))); }
+.damocles.on svg { animation: dmSway 5s ease-in-out infinite; }
+.damocles .thread { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 1.5; }
+.damocles .dcap { margin: 6px 0 0; font-family: var(--display); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--b-red); text-align: center; }
+@media (max-width: 1000px) { .damocles:not(.on) { display: none; } }
+@keyframes dmSway { 0%,100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }
+@media (prefers-reduced-motion: reduce) { .damocles.on svg { animation: none; } }
+@media print { .damocles { display: none; } }
 .tgctl .tggrp { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; }
 .tgctl .sep { width: 1px; align-self: stretch; background: var(--hair); margin: 0 2px; }
 .carry { width: 90px; color: var(--muted); border-color: var(--hair); font-size: 11px !important; padding: 2px 0 !important; background: transparent; }
@@ -589,6 +598,9 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
         <button type="button" data-open="dice">Roll dice</button>
         <button type="button" data-open="log">Roll log</button>
       </div>
+      <h2 class="gap">Boons &amp; Curses <button type="button" class="ti" data-tip="&lt;p&gt;Tap a status to turn it on or off. Active ones show as icons on your linked token and on your Party card.&lt;/p&gt;&lt;p&gt;A curse lands when a Hit (not a Graze) also meets your &lt;b&gt;Resistance&lt;/b&gt; (10 + your points in the listed trait). Default duration: until the end of your next turn. The same status doesn't stack.&lt;/p&gt;" aria-label="About Boons and Curses">i</button><span class="grow"></span><button type="button" class="small" id="btnStatusClear">Clear all</button></h2>
+      <div class="stlist" id="statusList"></div>
+      <p class="credit">Icons by Lorc, Delapouite and contributors, <a href="https://game-icons.net" target="_blank" rel="noopener">game-icons.net</a> (CC BY 3.0).</p>
     </div>
     <div>
       <h2>Theion Gauge <button type="button" class="ti" data-tip="&lt;p&gt;Theion is the strain on the string your Sword hangs from. Every spell and active Affinity &lt;b&gt;adds&lt;/b&gt; its band&#x27;s cost: Blue 2 · Green 4 · Yellow 6 · Red 9 (cantrips 0).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Limit&lt;/b&gt; = 12 + your Power points. Going over it is &lt;b&gt;Overreach&lt;/b&gt;: an Endurance Trial, TN 12 + 2 per point over (a Close Call counts). On a Failure you still cast, but take damage equal to the overage and mark a &lt;b&gt;Fray&lt;/b&gt; (−2 Limit until a Full Rest).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Next round&lt;/b&gt;: your gauge settles by your Intuition points (minimum 1; Medium armor −1, Heavy −2), then each held spell adds 1.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Quicken&lt;/b&gt;: +2 Theion to cast Spinthēr or a Blue spell as your Minor Action, once per turn.&lt;/p&gt;&lt;p&gt;Out of combat the gauge settles about as fast: &lt;b&gt;End combat&lt;/b&gt; and rests empty it.&lt;/p&gt;" aria-label="About the Theion Gauge">i</button><span class="grow"></span></h2>
@@ -601,14 +613,27 @@ dialog textarea { width: 100%; min-height: 200px; font-family: ui-monospace, mon
         <button type="button" id="btnFullRest">Full Rest</button>
         <button type="button" class="ti" data-tip="&lt;p&gt;&lt;b&gt;Short Rest&lt;/b&gt;: recover half the HP you've lost (needs a medical kit or healing magic).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Full Rest&lt;/b&gt; (about half a day): clears your Frays, refills Tyche's Favor, and restores HP (with a medical kit or healing magic).&lt;/p&gt;&lt;p&gt;Either rest leaves your Theion Gauge at 0.&lt;/p&gt;" aria-label="About rests" style="align-self:center">i</button>
       </div>
+      <div class="damocles" id="damocles" aria-hidden="true">
+        <svg viewBox="0 0 120 330" role="img">
+          <defs>
+            <linearGradient id="dmBlade" x1="0" x2="1"><stop offset="0" stop-color="#8d887c"/><stop offset=".45" stop-color="#e9e4d6"/><stop offset=".55" stop-color="#cfc9b8"/><stop offset="1" stop-color="#76715f"/></linearGradient>
+            <linearGradient id="dmBronze" x1="0" x2="1"><stop offset="0" stop-color="#7a4f22"/><stop offset=".5" stop-color="#d79b4f"/><stop offset="1" stop-color="#6b431b"/></linearGradient>
+          </defs>
+          <path class="thread" d="M60 0 C59 12 61 22 60 34"/>
+          <circle cx="60" cy="41" r="7.5" fill="url(#dmBronze)" stroke="#3b2510" stroke-width="1"/>
+          <rect x="55" y="48" width="10" height="38" rx="2" fill="#4a2f17" stroke="#2a1a0c" stroke-width="1"/>
+          <path d="M55 54 L65 58 M55 62 L65 66 M55 70 L65 74 M55 78 L65 82" stroke="#8a5a2c" stroke-width="1.4"/>
+          <path d="M16 84 Q38 94 60 90 Q82 94 104 84 L102 92 Q82 100 60 97 Q38 100 18 92 Z" fill="url(#dmBronze)" stroke="#3b2510" stroke-width="1"/>
+          <path d="M51 97 L69 97 L71 150 Q72 250 64 304 L60 326 L56 304 Q48 250 49 150 Z" fill="url(#dmBlade)" stroke="#4b473c" stroke-width="1"/>
+          <path d="M60 100 L60 296" stroke="#7d786a" stroke-width="1.6" opacity=".7"/>
+        </svg>
+        <p class="dcap" id="damoclesCap"></p>
+      </div>
     </div>
     <div>
       <h2>Concentration <button type="button" class="ti" data-tip="Offensive spells cost your Action each turn to hold; Defensive spells cost your Minor Action. Holding takes a hand and halves your Speed, and each held spell adds 1 Theion every round." aria-label="About Concentration">i</button><span class="grow"></span></h2>
       <div class="conc" id="concList"></div>
       <div class="warnline" id="concWarn"></div>
-      <h2 class="gap">Boons &amp; Curses <button type="button" class="ti" data-tip="&lt;p&gt;Tap a status to turn it on or off. Active ones show as icons on your linked token and on your Party card.&lt;/p&gt;&lt;p&gt;A curse lands when a Hit (not a Graze) also meets your &lt;b&gt;Resistance&lt;/b&gt; (10 + your points in the listed trait). Default duration: until the end of your next turn. The same status doesn't stack.&lt;/p&gt;" aria-label="About Boons and Curses">i</button><span class="grow"></span><button type="button" class="small" id="btnStatusClear">Clear all</button></h2>
-      <div class="stlist" id="statusList"></div>
-      <p class="credit">Icons by Lorc, Delapouite and contributors, <a href="https://game-icons.net" target="_blank" rel="noopener">game-icons.net</a> (CC BY 3.0).</p>
       <h2 class="gap">Daily Affinities <button type="button" class="ti" data-tip="One free use per day, refreshed at dawn. Extra uses cost an Agathós Daemon." aria-label="About Daily Affinities">i</button><span class="grow"></span></h2>
       <div class="daily" id="dailyList"></div>
       <div class="rowbtns"><button type="button" id="btnDawn">Dawn (refresh Daily)</button></div>
@@ -1285,6 +1310,12 @@ function renderGauge(){
       ${affs.length ? `<select id="affUse" aria-label="Affinity to use">${affs.map(x=>`<option value="${esc(x)}"${x===prevAff?" selected":""}>${esc(x)} (${affBand(x)[0].toUpperCase()+affBand(x).slice(1)} ${THEION_COST[affBand(x)]})</option>`).join("")}</select><button type="button" class="small" id="btnAffUse">Use Affinity</button><span class="sep"></span>` : ""}
       <span class="tggrp"><span class="sub">Frays</span><button type="button" class="small" data-fray="-1" title="Remove a Fray">−</button><button type="button" class="small" data-fray="1" title="Mark a Fray">+</button></span>
     </div></div>`;
+  const over = Math.max(0, t - L), dm = $("damocles");
+  if (dm) {
+    dm.style.setProperty("--dread", over ? Math.min(1, .22 + over * .13).toFixed(2) : "0");
+    dm.classList.toggle("on", over > 0);
+    $("damoclesCap").textContent = over ? (over >= 6 ? "The thread is all that holds it" : over >= 3 ? "The Sword draws near" : "Something hangs above you") : "";
+  }
 }
 // Add Theion for a spell or Affinity; roll Overreach if it goes past the Limit. Returns log lines.
 function addTheion(cost, what){
@@ -2475,6 +2506,6 @@ function partySnapshot(c){
 window.agonSheet = { current: () => cur, derive: c => derive(c), snapshot: c => partySnapshot(c) };
 })();
 </script>
-<script type="module" src="bridge.js?v=1.6.0"></script>
+<script type="module" src="bridge.js?v=1.7.0"></script>
 </body>
 </html>
