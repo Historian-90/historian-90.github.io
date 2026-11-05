@@ -1,35 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 475" role="img" aria-label="The Theion Gauge: four rings; Blue fills in 2 rounds, Green 3, Yellow 4, Red 5"><title>The Theion Gauge</title>
-<circle cx="250" cy="235" r="215" fill="var(--panel)" stroke="var(--rule)" stroke-width="3"/>
-<circle cx="250" cy="235" r="207" fill="none" stroke="var(--rule)" stroke-width="1" opacity=".5"/>
-<path d="M256.6,45.1 A190,190 0 0 1 256.6,424.9 L255.6,394.9 A160,160 0 0 0 255.6,75.1 Z" fill="var(--b-blue)" fill-opacity="1" stroke="var(--b-blue)" stroke-width="1.5"/>
-<path d="M243.4,424.9 A190,190 0 0 1 243.4,45.1 L244.4,75.1 A160,160 0 0 0 244.4,394.9 Z" fill="var(--b-blue)" fill-opacity="1" stroke="var(--b-blue)" stroke-width="1.5"/>
-<path d="M255.2,85.1 A150,150 0 0 1 382.4,305.4 L356.0,291.3 A120,120 0 0 0 254.2,115.1 Z" fill="var(--b-green)" fill-opacity="1" stroke="var(--b-green)" stroke-width="1.5"/>
-<path d="M377.2,314.5 A150,150 0 0 1 122.8,314.5 L148.2,298.6 A120,120 0 0 0 351.8,298.6 Z" fill="var(--b-green)" fill-opacity="1" stroke="var(--b-green)" stroke-width="1.5"/>
-<path d="M117.6,305.4 A150,150 0 0 1 244.8,85.1 L245.8,115.1 A120,120 0 0 0 144.0,291.3 Z" fill="var(--b-green)" fill-opacity="1" stroke="var(--b-green)" stroke-width="1.5"/>
-<path d="M253.8,125.1 A110,110 0 0 1 359.9,231.2 L330.0,232.2 A80,80 0 0 0 252.8,155.0 Z" fill="var(--b-yellow)" fill-opacity="1" stroke="var(--b-yellow)" stroke-width="1.5"/>
-<path d="M359.9,238.8 A110,110 0 0 1 253.8,344.9 L252.8,315.0 A80,80 0 0 0 330.0,237.8 Z" fill="var(--b-yellow)" fill-opacity="1" stroke="var(--b-yellow)" stroke-width="1.5"/>
-<path d="M246.2,344.9 A110,110 0 0 1 140.1,238.8 L170.0,237.8 A80,80 0 0 0 247.2,315.0 Z" fill="var(--b-yellow)" fill-opacity="1" stroke="var(--b-yellow)" stroke-width="1.5"/>
-<path d="M140.1,231.2 A110,110 0 0 1 246.2,125.1 L247.2,155.0 A80,80 0 0 0 170.0,232.2 Z" fill="var(--b-yellow)" fill-opacity="0.14" stroke="var(--b-yellow)" stroke-width="1.5"/>
-<path d="M252.4,165.0 A70,70 0 0 1 315.8,211.1 L287.6,221.3 A40,40 0 0 0 251.4,195.0 Z" fill="var(--b-red)" fill-opacity="1" stroke="var(--b-red)" stroke-width="1.5"/>
-<path d="M317.3,215.7 A70,70 0 0 1 293.1,290.2 L274.6,266.5 A40,40 0 0 0 288.5,224.0 Z" fill="var(--b-red)" fill-opacity="1" stroke="var(--b-red)" stroke-width="1.5"/>
-<path d="M289.1,293.0 A70,70 0 0 1 210.9,293.0 L227.6,268.2 A40,40 0 0 0 272.4,268.2 Z" fill="var(--b-red)" fill-opacity="1" stroke="var(--b-red)" stroke-width="1.5"/>
-<path d="M206.9,290.2 A70,70 0 0 1 182.7,215.7 L211.5,224.0 A40,40 0 0 0 225.4,266.5 Z" fill="var(--b-red)" fill-opacity="0.14" stroke="var(--b-red)" stroke-width="1.5"/>
-<path d="M184.2,211.1 A70,70 0 0 1 247.6,165.0 L248.6,195.0 A40,40 0 0 0 212.4,221.3 Z" fill="var(--b-red)" fill-opacity="0.14" stroke="var(--b-red)" stroke-width="1.5"/>
-<circle cx="250" cy="235" r="26" fill="var(--paper)" stroke="var(--rule)" stroke-width="2"/>
-<line x1="250" y1="235" x2="250" y2="30" stroke="var(--ink)" stroke-width="3"/>
-<circle cx="250" cy="235" r="7" fill="var(--ink)"/>
-<text x="500" y="62" font-family="Cinzel, Georgia, serif" font-size="15" letter-spacing="2" fill="var(--muted)">BAND · FULL AFTER</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 475" role="img" aria-label="The Theion Gauge: a dial from 0 to your Limit, in Blue, Green, Yellow and Red quarters. Spells cost Blue 2, Green 4, Yellow 6, Red 9; the gauge settles by your Intuition points each round."><title>The Theion Gauge</title>
+<circle cx="250" cy="245" r="215" fill="var(--panel)" stroke="var(--rule)" stroke-width="3"/>
+<circle cx="250" cy="245" r="207" fill="none" stroke="var(--rule)" stroke-width="1" opacity=".5"/>
+<path d="M120.5,370.0 A180,180 0 0 1 82.5,179.0 L138.3,201.0 A120,120 0 0 0 163.7,328.4 Z" fill="var(--b-blue)" fill-opacity=".18" stroke="var(--b-blue)" stroke-width="1.5"/>
+<path d="M120.5,370.0 A180,180 0 0 1 82.5,179.0 L138.3,201.0 A120,120 0 0 0 163.7,328.4 Z" fill="var(--b-blue)" fill-opacity=".9"/>
+<path d="M84.9,173.2 A180,180 0 0 1 246.9,65.0 L247.9,125.0 A120,120 0 0 0 140.0,197.2 Z" fill="var(--b-green)" fill-opacity=".18" stroke="var(--b-green)" stroke-width="1.5"/>
+<path d="M84.9,173.2 A180,180 0 0 1 246.9,65.0 L247.9,125.0 A120,120 0 0 0 140.0,197.2 Z" fill="var(--b-green)" fill-opacity=".9"/>
+<path d="M253.1,65.0 A180,180 0 0 1 415.1,173.2 L360.0,197.2 A120,120 0 0 0 252.1,125.0 Z" fill="var(--b-yellow)" fill-opacity=".18" stroke="var(--b-yellow)" stroke-width="1.5"/>
+<path d="M253.1,65.0 A180,180 0 0 1 402.4,149.2 L351.6,181.2 A120,120 0 0 0 252.1,125.0 Z" fill="var(--b-yellow)" fill-opacity=".9"/>
+<path d="M417.5,179.0 A180,180 0 0 1 379.5,370.0 L336.3,328.4 A120,120 0 0 0 361.7,201.0 Z" fill="var(--b-red)" fill-opacity=".18" stroke="var(--b-red)" stroke-width="1.5"/>
+<line x1="121.3" y1="373.7" x2="111.4" y2="383.6" stroke="var(--ink)" stroke-width="2"/>
+<text x="143.9" y="391.1" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="17" fill="var(--muted)">0</text>
+<line x1="86.0" y1="324.0" x2="78.8" y2="327.4" stroke="var(--ink)" stroke-width="1"/>
+<line x1="69.1" y1="265.4" x2="55.2" y2="266.9" stroke="var(--ink)" stroke-width="2"/>
+<line x1="72.6" y1="204.5" x2="64.8" y2="202.7" stroke="var(--ink)" stroke-width="1"/>
+<line x1="95.9" y1="148.2" x2="84.0" y2="140.7" stroke="var(--ink)" stroke-width="2"/>
+<line x1="136.5" y1="102.7" x2="131.5" y2="96.5" stroke="var(--ink)" stroke-width="1"/>
+<line x1="189.9" y1="73.2" x2="185.3" y2="60.0" stroke="var(--ink)" stroke-width="2"/>
+<line x1="250.0" y1="63.0" x2="250.0" y2="55.0" stroke="var(--ink)" stroke-width="1"/>
+<line x1="310.1" y1="73.2" x2="314.7" y2="60.0" stroke="var(--ink)" stroke-width="2"/>
+<line x1="363.5" y1="102.7" x2="368.5" y2="96.5" stroke="var(--ink)" stroke-width="1"/>
+<line x1="404.1" y1="148.2" x2="416.0" y2="140.7" stroke="var(--ink)" stroke-width="2"/>
+<line x1="427.4" y1="204.5" x2="435.2" y2="202.7" stroke="var(--ink)" stroke-width="1"/>
+<line x1="430.9" y1="265.4" x2="444.8" y2="266.9" stroke="var(--ink)" stroke-width="2"/>
+<line x1="414.0" y1="324.0" x2="421.2" y2="327.4" stroke="var(--ink)" stroke-width="1"/>
+<line x1="378.7" y1="373.7" x2="388.6" y2="383.6" stroke="var(--ink)" stroke-width="2"/>
+<text x="356.1" y="391.1" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="17" fill="var(--muted)">Limit</text>
+<line x1="250" y1="245" x2="393.9" y2="154.6" stroke="var(--ink)" stroke-width="3"/>
+<circle cx="250" cy="245" r="26" fill="var(--paper)" stroke="var(--rule)" stroke-width="2"/>
+<circle cx="250" cy="245" r="7" fill="var(--ink)"/>
+<text x="250" y="320" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="30" font-weight="700" fill="var(--ink)">10 / 14</text>
+<text x="500" y="62" font-family="Cinzel, Georgia, serif" font-size="15" letter-spacing="2" fill="var(--muted)">BAND · COST</text>
 <rect x="500" y="88" width="26" height="26" rx="3" fill="var(--b-blue)"/>
 <text x="540" y="108" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Blue</text>
-<text x="540" y="134" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Húdōr</tspan> · 2 rounds</text>
+<text x="540" y="134" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Húdōr</tspan> · 2 Theion</text>
 <rect x="500" y="166" width="26" height="26" rx="3" fill="var(--b-green)"/>
 <text x="540" y="186" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Green</text>
-<text x="540" y="212" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Aéras</tspan> · 3 rounds</text>
+<text x="540" y="212" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Aéras</tspan> · 4 Theion</text>
 <rect x="500" y="244" width="26" height="26" rx="3" fill="var(--b-yellow)"/>
 <text x="540" y="264" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Yellow</text>
-<text x="540" y="290" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Líthos</tspan> · 4 rounds</text>
+<text x="540" y="290" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Líthos</tspan> · 6 Theion</text>
 <rect x="500" y="322" width="26" height="26" rx="3" fill="var(--b-red)"/>
 <text x="540" y="342" font-family="Cinzel, Georgia, serif" font-size="21" font-weight="700" fill="var(--ink)">Red</text>
-<text x="540" y="368" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Photia</tspan> · 5 rounds</text>
-<text x="380.0" y="471" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-style="italic" font-size="17" fill="var(--muted)">After round 3: Blue and Green are full; Yellow and Red are still filling</text>
+<text x="540" y="368" font-family="EB Garamond, Georgia, serif" font-size="19" fill="var(--muted)"><tspan font-style="italic">Photia</tspan> · 9 Theion</text>
+<text x="380.0" y="471" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-style="italic" font-size="17" fill="var(--muted)">Limit 14: a Green and a Yellow spell put the needle at 10, in the Yellow zone</text>
 </svg>
