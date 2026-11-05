@@ -195,8 +195,13 @@ figure.diagram { text-align: center; }
 figure.diagram svg { display: inline-block; width: 100%; max-width: 560px; height: auto; }
 /* public-domain prints: ink on parchment in light, pale lines on black (like black-figure) in dark */
 figure.print img { object-fit: contain; max-height: 460px; border: 0; background: transparent; filter: grayscale(1) sepia(.55) contrast(1.2); mix-blend-mode: multiply; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) figure.print img { filter: grayscale(1) invert(1) sepia(.6) contrast(1.1) brightness(.95); mix-blend-mode: screen; } }
-:root[data-theme="dark"] figure.print img { filter: grayscale(1) invert(1) sepia(.6) contrast(1.1) brightness(.95); mix-blend-mode: screen; }
+/* dark theme: no inversion; the print sits on its own parchment plate, framed like the sheet's panels */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) figure.print { background: #ece0c8; padding: 14px; border: 1.5px solid var(--rule); border-radius: 3px; isolation: isolate;
+  box-shadow: inset 0 0 0 3px #ece0c8, inset 0 0 0 4px rgba(110,80,56,.45), 0 6px 18px rgba(0,0,0,.35); }
+  :root:not([data-theme="light"]) figure.print figcaption { color: #6b5744; } :root:not([data-theme="light"]) figure.print figcaption a { color: #8a3a22; } }
+:root[data-theme="dark"] figure.print { background: #ece0c8; padding: 14px; border: 1.5px solid var(--rule); border-radius: 3px; isolation: isolate;
+  box-shadow: inset 0 0 0 3px #ece0c8, inset 0 0 0 4px rgba(110,80,56,.45), 0 6px 18px rgba(0,0,0,.35); }
+:root[data-theme="dark"] figure.print figcaption { color: #6b5744; } :root[data-theme="dark"] figure.print figcaption a { color: #8a3a22; }
 figcaption.credit { font-style: normal; }
 figcaption { font-family: var(--entry); font-size: 12.5px; color: var(--muted); margin-top: 6px; text-align: right; }
 figcaption a { color: inherit; }

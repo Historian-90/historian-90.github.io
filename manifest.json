@@ -1,15 +1,16 @@
 {
-  "name": "Agon Rules",
-  "version": "1.2.2",
+  "name": "Agon",
+  "version": "1.4.1",
   "manifest_version": 1,
   "author": "CJ",
-  "description": "The Agon rulebooks: World Lore, Player's Handbook, and Historian's Handbook, with search.",
-  "icon": "/books/icon.svg",
+  "description": "Agon character sheet and dice: rolls are shared with the room, and HP shows on linked tokens.",
+  "icon": "/icon.svg",
+  "background_url": "/background.html?v=1.4.1",
   "action": {
-    "title": "Agon Rules",
-    "icon": "/books/icon.svg",
-    "popover": "/books/index.html?v=1.2.2",
-    "width": 1000,
+    "title": "Agon Sheet",
+    "icon": "/icon.svg",
+    "popover": "/sheet.html?v=1.4.1",
+    "width": 820,
     "height": 900
   }
 }
