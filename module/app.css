@@ -269,3 +269,23 @@ button.die.rider { font: 600 11.5px var(--entry); padding: 0 5px; }
 .ev.ovr { color: var(--hist); font-weight: 600; }
 .ev.ovr input { border-color: var(--hist); }
 .ci .xref { margin-left: auto; font: 12px var(--entry); align-self: center; }
+
+/* private roll history */
+#histbtn { flex: none; margin-left: auto; }
+#hist { position: fixed; left: 0; right: 0; bottom: 44px; height: min(60vh, 520px); z-index: 30; background: var(--panel); border-top: 2px solid var(--hist); box-shadow: 0 -8px 24px rgba(0,0,0,.3); display: none; flex-direction: column; font-family: var(--entry); }
+#hist.on { display: flex; }
+#hist header { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-bottom: 1px solid var(--hair); }
+#hist header b { font: 700 15px var(--display); color: var(--hist); }
+#histcount { color: var(--muted); font-size: 12px; }
+#histq { flex: 1; max-width: 340px; margin-left: auto; padding: 3px 8px; border: 1px solid var(--hair); background: var(--paper); border-radius: 3px; font: 13px var(--entry); }
+#histlist { overflow-y: auto; padding: 4px 10px 12px; }
+.hday { font: 600 11px var(--entry); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 8px 0 2px; }
+.hrow { display: grid; grid-template-columns: 82px minmax(120px, 260px) 40px auto 1fr; gap: 8px; align-items: baseline; padding: 3px 0; border-bottom: 1px dotted var(--hair); font-size: 12.5px; }
+.hrow time { color: var(--muted); font-size: 11.5px; }
+.hrow .hl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hrow b { font: 700 16px var(--display); color: var(--hist); text-align: right; }
+.hrow em { font-style: normal; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.hrow em.dvn { color: var(--gold); font-weight: 600; } .hrow em.crt { color: var(--warn); }
+.hrow .hd { color: var(--muted); }
+[data-size="compact"] .hrow { grid-template-columns: 64px 1fr 34px; }
+[data-size="compact"] .hrow em, [data-size="compact"] .hrow .hd { grid-column: 2 / -1; }

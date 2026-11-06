@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.1.2";
+const VERSION = "1.2.0";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
@@ -41,7 +41,13 @@ let modKey = null;
 let view = { kind: "overview" };
 const back = [], fwd = [];
 let peekId = null;
-let rolls = [];
+let rolls = LS.get("agon-module:rolls", []);   // private roll history, kept across close/reopen
+const ROLL_CAP = 300;
+const saveRolls = () => LS.set("agon-module:rolls", rolls);
+// UI state that survives closing the popover (Owlbear destroys the iframe on close)
+function saveUI() { if (!S) return; S.ui = { peekId, lastVs, main: $("#main")?.scrollTop || 0, side: $("#side .sbody")?.scrollTop || 0, peek: $("#peek")?.scrollTop || 0 }; saveState(); }
+let uiTimer = null; const saveUISoon = () => { clearTimeout(uiTimer); uiTimer = setTimeout(saveUI, 250); };
+function setPeek(id) { peekId = id; renderPeek(); saveUI(); }
 let curScene, routeIdx = 0;
 
 const blankState = () => ({ flags: {}, clocks: {}, notes: {}, combat: [], log: [], visited: {}, view: null, open: {}, target: "" });
@@ -79,7 +85,7 @@ function rollExpr(expr, label, opts = {}) {
     } else if (/^\d+$/.test(t)) { total += sign * +t; parts.push((sign < 0 ? "− " : "+ ") + t); }
   }
   const r = { label: label || expr, expr, total, detail: parts.join(" "), nat, crit: opts.crit, at: Date.now() };
-  rolls.unshift(r); rolls = rolls.slice(0, 12);
+  rolls.unshift(r); rolls = rolls.slice(0, ROLL_CAP); saveRolls();
   renderTray(true);
   return r;
 }
@@ -344,13 +350,13 @@ function rollTable(id) {
     if ((m = s.match(/^(\d+)\+$/))) return r.total >= +m[1];
     return +s === r.total;
   });
-  if (hit >= 0) { r.detail += ` → ${rows[hit].text.replace(/[*_`]|\[\[|\]\]/g, "")}`; renderTray(); }
+  if (hit >= 0) { r.detail += ` → ${rows[hit].text.replace(/[*_`]|\[\[|\]\]/g, "")}`; saveRolls(); renderTray(); }
   $$(`.rtable[data-table="${id}"] tr`).forEach((tr) => tr.classList.toggle("hit", +tr.dataset.i === hit));
 }
 
 /* ---------------- dice auto-linking ---------------- */
 function dice(root) {
-  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => n.parentElement.closest("button,a,textarea,input,.nodice,h1,h2,h3,h4") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => n.parentElement.closest("button,a,textarea,input,.nodice,h1,h2,h3,h4,#vs,#hist") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
   const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
   const re = /\b(Hit\s*[+−-]\s*\d+)|(\b\d*d(?:4|6|8|10|12|20|100)(?:\s*[+−–-]\s*\d+)?)\b/g;
   for (const n of nodes) {
@@ -483,8 +489,23 @@ function renderPeek() {
   $$("[data-mon]", p).forEach(fillMonster);
   dice(p);
 }
+function fmtTime(t) { const d = new Date(t); return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" }); }
+function openHistory() { $("#hist").classList.add("on"); renderHistory(); $("#histq").focus(); }
+function closeHistory() { $("#hist").classList.remove("on"); }
+function renderHistory() {
+  const q = ($("#histq")?.value || "").toLowerCase();
+  const list = rolls.filter((r) => !q || (r.label + " " + r.detail).toLowerCase().includes(q));
+  let day = "";
+  $("#histlist").innerHTML = list.length ? list.map((r) => {
+    const d = new Date(r.at).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+    const head = d !== day ? `<div class="hday">${(day = d)}</div>` : "";
+    return `${head}<div class="hrow"><time>${fmtTime(r.at)}</time><span class="hl">${esc(r.label)}</span><b>${r.total}</b>${natNote(r)}<span class="hd">${esc(r.detail)}</span></div>`;
+  }).join("") : `<div class="empty">${rolls.length ? "No rolls match." : "No private rolls yet."}</div>`;
+  $("#histcount").textContent = `${rolls.length} roll${rolls.length === 1 ? "" : "s"} kept (newest first, up to ${ROLL_CAP})`;
+}
 function renderTray(flash) {
   const t = $("#rolls");
+  if ($("#hist.on")) renderHistory();
   t.innerHTML = rolls.slice(0, 8).map((r, i) => `<div class="roll ${i === 0 && flash ? "new" : ""}" title="${esc(r.detail)}"><span class="rl">${esc(r.label)}</span><b>${r.total}</b>${natNote(r)}${i === 0 ? `<span class="rd">${esc(r.detail)}</span>` : ""}</div>`).join("") || `<span class="hint">Click any dice or “Hit +N” to roll privately. Only you see these.</span>`;
 }
 
@@ -516,17 +537,27 @@ function openModule(key) {
   modKey = key; lib.active = key; saveLib();
   S = Object.assign(blankState(), LS.get("agon-module:state:" + key, {}));
   S.combat.forEach((c) => { c.uid ??= Math.random().toString(36).slice(2, 9); if (c.ref) { delete c.eva; delete c.traits; delete c.element; } });
-  back.length = 0; fwd.length = 0; peekId = null;
+  back.length = 0; fwd.length = 0;
+  const ui = S.ui || {}; peekId = ui.peekId && M.ent[ui.peekId] ? ui.peekId : null; lastVs = ui.lastVs || null;
   view = S.view && (S.view.kind !== "scene" || M.scenes[S.view.id]) ? S.view : { kind: "overview" };
   if (view.kind === "library") view = { kind: "overview" };
   render();
+  restoreScroll(ui);
   prefetchBook();
+}
+function restoreScroll(ui) {
+  const apply = () => {
+    if (ui.main) $("#main").scrollTop = ui.main;
+    if (ui.side && $("#side .sbody")) $("#side .sbody").scrollTop = ui.side;
+    if (ui.peek && $("#peek")) $("#peek").scrollTop = ui.peek;
+  };
+  apply(); setTimeout(apply, 150); setTimeout(apply, 600); // stat blocks load async and change height
 }
 async function prefetchBook() {
   const need = Object.values(M.ent).filter((e) => e.type === "monster" && e.data.book);
   if (!need.length) return;
   for (const e of need) { const bm = await bookMonster(e.data.book); if (bm?.name && !e.data.name) e.title = bm.name; }
-  const sc = $("#main").scrollTop; render(); $("#main").scrollTop = sc;
+  const ui = { main: $("#main").scrollTop, side: $("#side .sbody")?.scrollTop, peek: $("#peek").scrollTop }; render(); restoreScroll(ui);
 }
 
 /* ---------------- search ---------------- */
@@ -658,12 +689,13 @@ function resolveAttack(btn) {
     }
   }
   lastVs = { act, tname: T.name, tkind: T.kind, uid: T.uid, nat, N, total, E, out, dmg, hasDmg: !!dd, multNote, sts, reacts, crit, at: Date.now() };
-  rolls.unshift({ label: `${act} → ${T.name}`, expr: btn.dataset.expr, total, detail: `${OUT[out]}${dd ? `, ${dmg.n} dmg` : ""} (d20[${nat}] ${fmtMod(N)} vs Ev ${E})`, nat, crit, at: Date.now() });
-  rolls = rolls.slice(0, 12); renderTray(true); showVs();
+  const stTxt = sts.map((x) => `${x.nm} ${x.ok ? "applies" : "no"}`).join(", ");
+  rolls.unshift({ label: `${act} → ${T.name}`, expr: btn.dataset.expr, total, detail: `${OUT[out]}${dd ? `, ${dmg.n} dmg` : ""}${stTxt ? `; ${stTxt}` : ""} (d20[${nat}] ${fmtMod(N)} vs Ev ${E}${dd && dmg.how ? `; ${dmg.how}` : ""})`, nat, crit, at: Date.now() });
+  rolls = rolls.slice(0, ROLL_CAP); saveRolls(); renderTray(true); showVs(); saveUI();
 }
 function resolveDamage(btn) {
   const T = getTarget(); const r = rollExpr(btn.dataset.expr, `${btn.dataset.label || btn.dataset.expr} → ${T.name}`); if (!r) return;
-  lastVs = { act: btn.dataset.label || btn.dataset.expr, tname: T.name, tkind: T.kind, uid: T.uid, plain: true, total: r.total, detail: r.detail, at: Date.now() };
+  lastVs = { act: btn.dataset.label || btn.dataset.expr, tname: T.name, tkind: T.kind, uid: T.uid, plain: true, total: r.total, detail: r.detail, at: Date.now() }; saveUI();
   showVs();
 }
 function showVs() {
@@ -744,7 +776,7 @@ async function watchParty() {
 /* ---------------- events ---------------- */
 function openRef(id) {
   if (M.scenes[id]) { go({ kind: "scene", id }); return; }
-  if (M.ent[id]) { peekId = id; renderPeek(); if (["cast", "bestiary", "tables"].includes(prefs.tab)) renderSide(); return; }
+  if (M.ent[id]) { setPeek(id); if (["cast", "bestiary", "tables"].includes(prefs.tab)) renderSide(); return; }
   toast("Nothing called “" + id + "” in this module.");
 }
 function addCombat(name, ref) {
@@ -803,19 +835,22 @@ document.addEventListener("click", async (ev) => {
     case "back": if (back.length) { fwd.push(view); view = back.pop(); render(); } return;
     case "fwd": if (fwd.length) { back.push(view); view = fwd.pop(); render(); } return;
     case "libbtn": return go({ kind: "library" });
-    case "peekx": peekId = null; renderPeek(); return renderSide();
+    case "peekx": setPeek(null); return renderSide();
+    case "histbtn": return openHistory();
+    case "histx": return closeHistory();
+    case "histclear": if (!confirmInline(t, "Click again to clear")) return; rolls = []; saveRolls(); renderTray(); return renderHistory();
     case "demo": {
       try { const r = await fetch("demo.json?v=" + VERSION, { cache: "no-cache" }); const j = await r.json(); return importText(j.text, j.name); }
       catch { return toast("Couldn't load the demo module."); }
     }
     case "addfoe": { const c = addCombat("Foe " + (S.combat.length + 1), null); await linkSelection([c]); return renderSide(); }
     case "initall": for (let i = 0; i < S.combat.length; i++) if (S.combat[i].init == null && S.combat[i].hp > 0) await rollInit(i, true); return renderSide();
-    case "clearcbt": if (!confirmInline(t, "Sure?")) return; clearInit(S.combat); if (S.target.startsWith("c:")) S.target = ""; S.combat = []; lastVs = null; saveState(); renderPeek(); return renderSide();
+    case "clearcbt": if (!confirmInline(t, "Sure?")) return; clearInit(S.combat); if (S.target.startsWith("c:")) S.target = ""; S.combat = []; lastVs = null; saveUI(); renderPeek(); return renderSide();
     case "resetst": if (!confirmInline(t, "Click again to wipe notes, flags, clocks, log")) return; S = blankState(); saveState(); return render();
     case "theme": prefs.theme = { auto: "light", light: "dark", dark: "auto" }[prefs.theme]; savePrefs(); return applyTheme();
     case "size": prefs.size = prefs.size === "full" ? "compact" : "full"; savePrefs(); applySize(); return render();
     case "sidebtn": document.body.classList.toggle("sideopen"); return;
-    case "close": if (inOBR) { chan?.postMessage("closed"); OBR.popover.close(POP); } return;
+    case "close": saveUI(); if (inOBR) { chan?.postMessage("closed"); OBR.popover.close(POP); } return;
   }
 });
 function confirmInline(btn, msg) {
@@ -825,6 +860,7 @@ function confirmInline(btn, msg) {
 }
 document.addEventListener("input", (ev) => {
   const t = ev.target, ds = t.dataset;
+  if (t.id === "histq") return renderHistory();
   if (ds.note) { S.notes[ds.note] = t.value; saveState(); }
   if (ds.cname != null) { S.combat[+ds.cname].name = t.value; saveState(); }
   if (ds.cnote != null) { S.combat[+ds.cnote].note = t.value; saveState(); }
@@ -851,8 +887,13 @@ document.addEventListener("dragleave", () => $("#drop")?.classList.remove("over"
 document.addEventListener("drop", (e) => { if ($("#drop")) { e.preventDefault(); readFiles(e.dataTransfer.files); } });
 document.addEventListener("keydown", (e) => {
   if (e.key === "/" && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); $("#q").focus(); }
-  if (e.key === "Escape" && peekId) { peekId = null; renderPeek(); }
+  if (e.key === "Escape" && $("#hist.on")) return closeHistory();
+  if (e.key === "Escape" && peekId) setPeek(null);
 });
+
+document.addEventListener("scroll", (e) => { if (e.target.id === "main" || e.target.id === "peek" || e.target.classList?.contains("sbody")) saveUISoon(); }, true);
+window.addEventListener("pagehide", saveUI);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") saveUI(); });
 
 /* ---------------- theme / size ---------------- */
 let obrMode = null;

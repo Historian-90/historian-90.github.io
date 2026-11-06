@@ -2,7 +2,7 @@
 // Players' clients never register the tool, so they get no button.
 import OBR from "@owlbear-rodeo/sdk";
 
-const V = "1.1.2";
+const V = "1.2.0";
 const TOOL = "com.agon.module/tool";
 const POP = "com.agon.module/popover";
 const base = new URL(".", location.href);

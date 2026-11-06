@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app.css?v=1.1.2">
+<link rel="stylesheet" href="app.css?v=1.2.0">
 </head>
 <body>
 <header id="top">
@@ -29,8 +29,13 @@
 <footer id="tray">
   <form id="dicef"><input id="dicei" placeholder="2d6+3" autocomplete="off"><button class="btn sm">Roll</button></form>
   <div id="rolls"></div>
+  <button id="histbtn" class="btn sm" title="All private rolls">See all ▴</button>
 </footer>
+<section id="hist" aria-label="Private roll history">
+  <header><b>Private rolls</b><span id="histcount"></span><input id="histq" placeholder="Filter: a creature, a target, “Hit”…" autocomplete="off"><button id="histclear" class="btn sm danger">Clear</button><button id="histx" class="ib" title="Close">×</button></header>
+  <div id="histlist"></div>
+</section>
 <div id="toast"></div>
-<script src="app.js?v=1.1.2"></script>
+<script src="app.js?v=1.2.0"></script>
 </body>
 </html>
