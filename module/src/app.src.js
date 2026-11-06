@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
