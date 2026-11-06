@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.2.0";
+const VERSION = "1.2.1";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
@@ -156,7 +156,8 @@ function parseModule(src) {
   let cur = { kind: "preface", lines: [] }; const secs = [cur];
   for (const ln of lines) {
     if (/^:::\s*[a-z]/i.test(ln)) depth++; else if (/^:::\s*$/.test(ln) && depth > 0) depth--;
-    const h = depth === 0 && ln.match(/^(#{1,2})\s+(.+?)\s*(?:\{#([\w-]+)\})?\s*$/);
+    let h = depth === 0 && ln.match(/^(#{1,2})\s+(.+?)\s*(?:\{#([\w-]+)\})?\s*$/);
+    if (h && h[1].length === 2 && !secs.some((x) => x.kind === "chapter")) h = null; // ## in the preface stays in the preface
     if (h) { cur = { kind: h[1].length === 1 ? "chapter" : "scene", title: h[2], id: (h[3] || slug(h[2])).toLowerCase(), lines: [] }; secs.push(cur); }
     else cur.lines.push(ln);
   }
