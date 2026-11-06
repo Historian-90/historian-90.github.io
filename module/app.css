@@ -266,3 +266,6 @@ button.die:hover { border-color: var(--hist); }
 
 button.die.rider { font: 600 11.5px var(--entry); padding: 0 5px; }
 .ch a { white-space: nowrap; }
+.ev.ovr { color: var(--hist); font-weight: 600; }
+.ev.ovr input { border-color: var(--hist); }
+.ci .xref { margin-left: auto; font: 12px var(--entry); align-self: center; }

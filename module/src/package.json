@@ -1,7 +1,7 @@
 {
   "name": "agon-module",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "scripts": {
     "build": "esbuild app.src.js --bundle --minify --format=iife --target=es2020 --outfile=../app.js && esbuild background.src.js --bundle --minify --format=iife --target=es2020 --outfile=../background.js && node -e \"const fs=require('fs');fs.writeFileSync('../demo.json',JSON.stringify({name:'demo.md',text:fs.readFileSync('demo.md','utf8')}))\""
   },

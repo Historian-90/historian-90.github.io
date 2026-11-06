@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.1.0";
+const VERSION = "1.1.1";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
@@ -465,8 +465,8 @@ function renderSide() {
 function trackerHTML() {
   const clocks = Object.values(M.ent).filter((e) => e.type === "clock");
   const combat = S.combat.map((c, i) => `<div class="cbt ${c.hp <= 0 ? "down" : ""} ${S.target === "c:" + c.uid ? "tgt" : ""}"><div class="cn"><input value="${esc(c.name)}" data-cname="${i}"><button class="x" data-crem="${i}" title="Remove">×</button></div>
-    <div class="ch"><button data-hp="${i}" data-d="-1" title="Damage">−</button><input class="amt" type="number" min="0" placeholder="amt" data-amt="${i}"><button data-hp="${i}" data-d="1" title="Heal">+</button><span class="hpv"><b>${c.hp}</b>/${c.max}</span><label class="ev" title="Evasion">Ev<input type="number" value="${c.eva ?? 10}" data-ceva="${i}"></label>${c.ref ? `<a href="#" class="xref" data-ref="${c.ref}">stats</a>` : ""}</div>
-    <div class="ci"><button class="btn xs" data-init="${i}" title="Roll d20 + Agility modifier (${fmtMod(2 * (c.traits?.agility || 0))})">⚡ Init${c.init != null ? ` <b>${c.init}</b>` : ""}</button><button class="btn xs ${c.token ? "linked" : ""}" data-link="${i}" title="${c.token ? "Linked token. Click to unlink." : "Select a token on the map, then click to link it"}">${c.token ? "🔗 " + esc(c.tokenName || "token") : "🔗 Link token"}</button><button class="btn xs" data-tgt="${i}" title="Make this the target">🎯</button></div>
+    <div class="ch"><button data-hp="${i}" data-d="-1" title="Damage">−</button><input class="amt" type="number" min="0" placeholder="amt" data-amt="${i}"><button data-hp="${i}" data-d="1" title="Heal">+</button><span class="hpv"><b>${c.hp}</b>/${c.max}</span><label class="ev ${c.evaOverride != null ? "ovr" : ""}" title="${c.evaOverride != null ? `Evasion (your override; the stat block says ${cStats(c).base}). Clear the box to go back.` : "Evasion, from the stat block. Type a number to override."}">Ev<input type="number" value="${cStats(c).eva}" data-ceva="${i}"></label></div>
+    <div class="ci"><button class="btn xs" data-init="${i}" title="Roll d20 + Agility modifier (${fmtMod(2 * (cStats(c).traits.agility || 0))})">⚡ Init${c.init != null ? ` <b>${c.init}</b>` : ""}</button><button class="btn xs ${c.token ? "linked" : ""}" data-link="${i}" title="${c.token ? "Linked token. Click to unlink." : "Select a token on the map, then click to link it"}">${c.token ? "🔗 " + esc(c.tokenName || "token") : "🔗 Link token"}</button><button class="btn xs" data-tgt="${i}" title="Make this the target">🎯</button>${c.ref ? `<a href="#" class="xref" data-ref="${c.ref}">stats</a>` : ""}</div>
     <input class="cnote" placeholder="conditions, notes" value="${esc(c.note || "")}" data-cnote="${i}"></div>`).join("");
   return `<div class="grp"><div class="gh">Combat <button class="btn xs" id="addfoe">+ custom</button>${S.combat.length ? '<button class="btn xs" id="initall" title="Roll initiative for every foe without one">⚡ all</button><button class="btn xs" id="clearcbt">clear</button>' : ""}</div>${combat || '<div class="empty">Use ⚔ Run on an encounter, or “Add to combat” on a stat block.</div>'}</div>
   <div class="grp"><div class="gh">Story flags</div>${M.flags.length ? M.flags.map((f) => flagBox(f.id, f.label)).join("") : '<div class="empty">This module has no flags.</div>'}</div>
@@ -515,7 +515,7 @@ function openModule(key) {
   try { parseModule(it.text); } catch (e) { toast("Module error: " + e.message); M = null; return; }
   modKey = key; lib.active = key; saveLib();
   S = Object.assign(blankState(), LS.get("agon-module:state:" + key, {}));
-  S.combat.forEach((c) => { c.uid ??= Math.random().toString(36).slice(2, 9); c.eva ??= 10; c.traits ??= {}; });
+  S.combat.forEach((c) => { c.uid ??= Math.random().toString(36).slice(2, 9); if (c.ref) { delete c.eva; delete c.traits; delete c.element; } });
   back.length = 0; fwd.length = 0; peekId = null;
   view = S.view && (S.view.kind !== "scene" || M.scenes[S.view.id]) ? S.view : { kind: "overview" };
   if (view.kind === "library") view = { kind: "overview" };
@@ -523,9 +523,9 @@ function openModule(key) {
   prefetchBook();
 }
 async function prefetchBook() {
-  const need = Object.values(M.ent).filter((e) => e.type === "monster" && e.data.book && !e.data.name);
+  const need = Object.values(M.ent).filter((e) => e.type === "monster" && e.data.book);
   if (!need.length) return;
-  for (const e of need) { const bm = await bookMonster(e.data.book); if (bm?.name) e.title = bm.name; }
+  for (const e of need) { const bm = await bookMonster(e.data.book); if (bm?.name && !e.data.name) e.title = bm.name; }
   const sc = $("#main").scrollTop; render(); $("#main").scrollTop = sc;
 }
 
@@ -565,6 +565,11 @@ function monStats(e) {
   const element = d.element || ELEMENTS.find((x) => new RegExp("\\b" + x + "\\b").test(metaTxt)) || null;
   return { hp, eva, traits, element };
 }
+// A combat entry's live stats: from its stat block, unless the Historian typed an Evasion override.
+function cStats(c) {
+  const st = c.ref && M.ent[c.ref] ? monStats(M.ent[c.ref]) : { eva: c.eva ?? 10, traits: c.traits || {}, element: c.element || null };
+  return { base: st.eva, eva: c.evaOverride ?? st.eva, traits: st.traits || {}, element: st.element };
+}
 function getTarget() {
   if (!S || !S.target) return null;
   const [kind, id] = [S.target.slice(0, 1), S.target.slice(2)];
@@ -573,14 +578,14 @@ function getTarget() {
     return { kind: "party", key: S.target, name: p.name, eva: +c.eva || 10, dodge: +c.dodge || 1, parry: +c.parry || 1, traits: c.traits || {}, hp: c.hp, max: c.hpMax, status: c.status || [], element: null };
   }
   const c = S.combat.find((x) => x.uid === id); if (!c) return null;
-  const tr = c.traits || {};
-  return { kind: "combat", key: S.target, uid: c.uid, name: c.name, eva: +c.eva || 10, dodge: Math.max(1, tr.agility || 0), parry: Math.max(1, tr.strength || 0), traits: tr, hp: c.hp, max: c.max, status: STATUSES.map((s) => s[0]).filter((n) => new RegExp("\\b" + n + "\\b", "i").test(c.note || "")), element: c.element };
+  const cs = cStats(c); const tr = cs.traits;
+  return { kind: "combat", key: S.target, uid: c.uid, name: c.name, eva: cs.eva, dodge: Math.max(1, tr.agility || 0), parry: Math.max(1, tr.strength || 0), traits: tr, hp: c.hp, max: c.max, status: STATUSES.map((s) => s[0]).filter((n) => new RegExp("\\b" + n + "\\b", "i").test(c.note || "")), element: cs.element };
 }
 function targetBar() {
   const T = getTarget();
   const opt = (v, l) => `<option value="${esc(v)}" ${S.target === v ? "selected" : ""}>${esc(l)}</option>`;
   const pOpts = party.map((p) => opt("p:" + p.id, p.name + (p.card.kind === "aegis" ? " (Aegis)" : "") + ` · Ev ${p.card.eva}`)).join("");
-  const cOpts = S.combat.map((c) => opt("c:" + c.uid, `${c.name} · Ev ${c.eva ?? 10}${c.hp <= 0 ? " (down)" : ""}`)).join("");
+  const cOpts = S.combat.map((c) => opt("c:" + c.uid, `${c.name} · Ev ${cStats(c).eva}${c.hp <= 0 ? " (down)" : ""}`)).join("");
   const sum = T ? `Ev <b>${T.eva}</b> · Dodge ${fmtMod(T.dodge)} · Parry ${fmtMod(T.parry)} · HP ${T.hp ?? "?"}/${T.max ?? "?"}${T.element ? " · " + T.element : ""}${T.status.length ? " · " + T.status.join(", ") : ""}`
     : (S.target ? "That target is gone (token removed or sheet unlinked)." : `Pick a target and every <b>Hit +N</b> below resolves against it.${inOBR && !party.length ? " Party members appear once their sheets are linked to tokens." : ""}`);
   return `<div class="tbar"><label>🎯 Target <select id="tgt">${opt("", "None (plain rolls)")}${pOpts ? `<optgroup label="Party">${pOpts}</optgroup>` : ""}${cOpts ? `<optgroup label="Combat">${cOpts}</optgroup>` : ""}</select></label><div class="tsum">${sum}</div></div><div id="vs">${vsHTML()}</div>`;
@@ -701,7 +706,7 @@ async function clearInit(list) {
   try { await OBR.scene.items.updateItems(ids, (items) => { for (const it of items) delete it.metadata[INIT_KEY]; }); } catch {}
 }
 async function rollInit(i, quiet) {
-  const c = S.combat[i]; const mod = 2 * (c.traits?.agility || 0);
+  const c = S.combat[i]; const mod = 2 * (cStats(c).traits.agility || 0);
   const r = rollExpr("d20" + (mod ? fmtMod(mod).replace("−", "-") : ""), `${c.name} · Initiative`); if (!r) return;
   c.init = r.total; saveState();
   if (inOBR && !c.token) { const n = await linkSelection([c], true); if (!n && !quiet) toast(`Initiative ${r.total}. Link a token to put it in the Initiative Tracker.`); }
@@ -743,8 +748,8 @@ function openRef(id) {
   toast("Nothing called “" + id + "” in this module.");
 }
 function addCombat(name, ref) {
-  const st = ref && M.ent[ref] ? monStats(M.ent[ref]) : { hp: 10, eva: 10, traits: {}, element: null };
-  const c = { uid: Math.random().toString(36).slice(2, 9), name, hp: st.hp, max: st.hp, eva: st.eva, traits: st.traits, element: st.element, ref, note: "" };
+  const st = ref && M.ent[ref] ? monStats(M.ent[ref]) : { hp: 10 };
+  const c = { uid: Math.random().toString(36).slice(2, 9), name, hp: st.hp, max: st.hp, ref, note: "" };
   S.combat.push(c); saveState(); return c;
 }
 
@@ -827,7 +832,10 @@ document.addEventListener("input", (ev) => {
 document.addEventListener("change", (ev) => {
   const t = ev.target;
   if (t.id === "tgt") { S.target = t.value; saveState(); renderPeek(); renderSide(); return; }
-  if (t.dataset.ceva != null) { S.combat[+t.dataset.ceva].eva = +t.value || 0; saveState(); }
+  if (t.dataset.ceva != null) {
+    const c = S.combat[+t.dataset.ceva]; const base = cStats(c).base;
+    c.evaOverride = t.value === "" || +t.value === base ? null : +t.value; saveState(); renderSide();
+  }
   if (t.dataset.flag) { S.flags[t.dataset.flag] = t.checked; saveState(); $$(`[data-flag="${t.dataset.flag}"]`).forEach((x) => x.checked = t.checked); }
   if (t.id === "file") readFiles(t.files);
 });
