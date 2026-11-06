@@ -1,9 +1,9 @@
 {
   "name": "Agon Module",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "manifest_version": 1,
   "author": "CJ",
   "description": "The Historian's module reader. Only the GM gets a button; module text stays in the GM's browser.",
   "icon": "/module/icon.svg",
-  "background_url": "/module/background.html?v=1.3.0"
+  "background_url": "/module/background.html?v=1.4.0"
 }

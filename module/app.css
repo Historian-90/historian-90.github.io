@@ -292,3 +292,4 @@ button.die.rider { font: 600 11.5px var(--entry); padding: 0 5px; }
 .foes li.extra { color: var(--muted); }
 .pairs { margin-left: 6px; font: 11px var(--entry); text-transform: none; letter-spacing: 0; }
 .pairs select { font: 11px var(--entry); padding: 0 2px; border: 1px solid var(--hair); background: var(--paper); border-radius: 3px; }
+.xref.t-encounter { color: var(--warn); }

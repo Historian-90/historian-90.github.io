@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.3.0";
+const VERSION = "1.4.0";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
@@ -130,6 +130,10 @@ function register(text, ent, ctx) {
       const data = b.type === "monster" && !b.body.trim() ? { book: id } : loadYaml(b.body, b.type + " " + id);
       ent[id] = { id, type: b.type, data, title: data.name || data.label || title || id, scene: ctx.scene };
     }
+    if (b.type === "encounter") {
+      const m = b.args.match(/\{#([\w-]+)\}/);
+      if (m) { const id = m[1].toLowerCase(); ent[id] = { id, type: "encounter", data: loadYaml(b.body, "encounter " + id), body: b.body, title: b.args.replace(/\s*\{#[\w-]+\}/, "") || id, scene: ctx.scene }; }
+    }
     if (b.type === "flags") {
       const d = loadYaml(b.body, "flags");
       for (const [id, label] of flagPairs(d)) M.flags.push({ id, label, scene: ctx.scene });
@@ -245,6 +249,7 @@ function parseFoe(s) {
   return m ? { id: m[2].toLowerCase(), n: +(m[1] || m[3] || 1), extra: /4th pair/i.test(String(s)) } : null;
 }
 function renderEncounter(b) {
+  b = { ...b, args: (b.args || "").replace(/\s*\{#[\w-]+\}/, "") };
   const d = loadYaml(b.body, "encounter"); if (d.__error) return errBox(d);
   const foes = (d.foes || []).map(parseFoe).filter(Boolean);
   const fl = foes.map((f) => `<li class="${f.extra ? "extra" : ""}"><b>${f.n} ×</b> ${wiki(`[[${f.id}]]`)}${f.extra ? ' <small>(4th pair)</small>' : ""}</li>`).join("");
@@ -295,6 +300,7 @@ function renderEntity(e, inline) {
     if (inline) return `<div class="card monster">${head}<button class="btn sm open" data-ent="${e.id}">Open stat block</button></div>`;
     return `<div class="card monster" data-mon="${e.id}">${head}<div class="mbody">Loading…</div></div>`;
   }
+  if (e.type === "encounter") return renderEncounter({ args: e.title, body: e.body });
   if (e.type === "table") {
     const rows = tableRows(d);
     return `<div class="card rtable" data-table="${e.id}"><div class="cardh"><span class="lbl">${esc(d.kind || "Table")}</span><h4>${esc(e.title)}</h4><button class="btn sm rollt" data-table="${e.id}">🎲 ${esc(tableDie(d, rows))}</button></div>${d.text ? `<p>${mdInline(d.text)}</p>` : ""}<table>${rows.map((r, i) => `<tr data-i="${i}"><th>${esc(r.roll)}</th><td>${mdInline(r.text)}</td></tr>`).join("")}</table></div>`;
@@ -490,7 +496,7 @@ function renderPeek() {
   if (!peekId || !M || !M.ent[peekId]) { p.classList.remove("on"); p.innerHTML = ""; return; }
   const e = M.ent[peekId];
   p.classList.add("on");
-  p.innerHTML = `<div class="peekbar"><span>${esc({ npc: "Cast", monster: "Bestiary", table: "Table", clock: "Clock" }[e.type])}</span>${e.scene ? `<a href="#" class="xref" data-ref="${e.scene}">in ${esc(M.scenes[e.scene]?.title || "")}</a>` : ""}<button class="x" id="peekx" title="Close">×</button></div>${e.type === "monster" ? targetBar() : ""}<div class="peekbody">${e.type === "clock" ? renderClock(e) : renderEntity(e, false)}</div>`;
+  p.innerHTML = `<div class="peekbar"><span>${esc({ npc: "Cast", monster: "Bestiary", table: "Table", clock: "Clock", encounter: "Encounter" }[e.type])}</span>${e.scene ? `<a href="#" class="xref" data-ref="${e.scene}">in ${esc(M.scenes[e.scene]?.title || "")}</a>` : ""}<button class="x" id="peekx" title="Close">×</button></div>${e.type === "monster" ? targetBar() : ""}<div class="peekbody">${e.type === "clock" ? renderClock(e) : renderEntity(e, false)}</div>`;
   $$("[data-mon]", p).forEach(fillMonster);
   dice(p);
 }
@@ -577,7 +583,7 @@ function searchHTML(q) {
   for (const e of Object.values(M.ent)) {
     const txt = JSON.stringify(e.data).replace(/["{}\[\],]/g, " ");
     const i = txt.toLowerCase().indexOf(ql);
-    if (e.title.toLowerCase().includes(ql) || i >= 0) hits.push({ id: e.id, title: e.title, kind: { npc: "NPC", monster: "Stat block", table: "Table", clock: "Clock" }[e.type], snip: i >= 0 ? txt.slice(Math.max(0, i - 60), i + 90) : "" });
+    if (e.title.toLowerCase().includes(ql) || i >= 0) hits.push({ id: e.id, title: e.title, kind: { npc: "NPC", monster: "Stat block", table: "Table", clock: "Clock", encounter: "Encounter" }[e.type], snip: i >= 0 ? txt.slice(Math.max(0, i - 60), i + 90) : "" });
   }
   const hl = (s) => esc(s).replace(new RegExp(ql.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), (m) => `<mark>${m}</mark>`);
   return `<article class="scene"><h1>Search: “${esc(q)}”</h1>${hits.length ? hits.map((h) => `<div class="hit"><a href="#" class="xref" data-ref="${h.id}">${esc(h.title)}</a> <small>${h.kind}</small>${h.snip ? `<p class="nodice">…${hl(h.snip)}…</p>` : ""}</div>`).join("") : "<p>No matches.</p>"}</article>`;
@@ -813,7 +819,8 @@ document.addEventListener("click", async (ev) => {
   if (t.classList.contains("rollt")) return rollTable(ds.table);
   if (ds.run) {
     const all = JSON.parse(ds.run); const pairs = S.pairs || 4; const foes = all.filter((f) => !f.extra || pairs >= 4); const made = [];
-    for (const f of foes) { const e = M.ent[f.id]; if (e?.data.book) await bookMonster(e.data.book); for (let i = 1; i <= f.n; i++) made.push(addCombat((e?.title || f.id) + (f.n > 1 ? " " + i : ""), e ? f.id : null)); }
+    const total = {}, seen = {}; foes.forEach((f) => (total[f.id] = (total[f.id] || 0) + f.n));
+    for (const f of foes) { const e = M.ent[f.id]; if (e?.data.book) await bookMonster(e.data.book); for (let i = 1; i <= f.n; i++) { seen[f.id] = (seen[f.id] || 0) + 1; made.push(addCombat((e?.title || f.id) + (total[f.id] > 1 ? " " + seen[f.id] : ""), e ? f.id : null)); } }
     const linked = await linkSelection(made);
     prefs.tab = "tracker"; savePrefs(); renderSide(); toast(`Added ${made.length} to combat${linked ? `, linked ${linked} selected token${linked > 1 ? "s" : ""}` : ""}.`); return;
   }
