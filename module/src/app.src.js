@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.1.1";
+const VERSION = "1.1.2";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
@@ -646,7 +646,7 @@ function resolveAttack(btn) {
   // statuses named in this ability
   const sts = STATUSES.filter(([nm]) => new RegExp("\\b" + nm + "\\b").test(txt)).map(([nm, kind, def]) => {
     const m = txt.match(new RegExp(nm + "\\W{0,4}\\((\\w+)\\)")); const tk = traitKey(m ? m[1] : def);
-    const res = 10 + (tk ? (+T.traits[tk] || 0) : 0);
+    const res = 10 + (tk ? 2 * (+T.traits[tk] || 0) : 0); // Resistance = 10 + trait modifier (rulebook v1.3.4)
     return { nm, kind, tk, res, ok: kind === "boon" ? fullHit(out) : fullHit(out) && total >= res };
   });
   const reacts = [];

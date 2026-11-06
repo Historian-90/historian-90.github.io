@@ -154,7 +154,7 @@ actions:
     text: "Hit +2 · 1d6 + 2 · crit 19."
   - name: Drag Under
     tag: Even rounds
-    text: "On a hit, the target is **Bound** (Str) and takes 1d4 cold damage each round until it escapes."
+    text: "On a hit, the target is **Bound** (Agi) and takes 1d4 cold damage each round until it escapes."
   - name: Seeking
     text: Ignores anyone who gives it a light. That counts as defeating it.
 exp: 15
