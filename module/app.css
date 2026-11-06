@@ -15,7 +15,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
+html, body { height: 100%; margin: 0; background: var(--paper); }
 body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--label); display: flex; flex-direction: column; overflow: hidden; }
 button, input, textarea { font: inherit; color: inherit; }
 a { color: var(--accent); }
@@ -40,7 +40,7 @@ a { color: var(--accent); }
 /* layout */
 #wrap { flex: 1; display: flex; min-height: 0; padding-top: 6px; }
 aside#side { width: 250px; flex: none; border-right: 1px solid var(--hair); display: flex; flex-direction: column; min-height: 0; background: var(--panel); }
-main#main { flex: 1; overflow-y: auto; min-width: 0; scroll-behavior: smooth; }
+main#main { flex: 1; background: var(--paper); overflow-y: auto; min-width: 0; scroll-behavior: smooth; }
 #peek { width: 0; flex: none; overflow-y: auto; background: var(--panel); border-left: 1px solid var(--hair); transition: width .15s; }
 #peek.on { width: 400px; }
 [data-size="compact"] #peek.on { position: fixed; right: 0; top: 52px; bottom: 44px; width: min(400px, 92vw); z-index: 20; box-shadow: -6px 0 18px rgba(0,0,0,.25); }

@@ -479,7 +479,9 @@ function libraryHTML() {
 }
 function importText(text, name) {
   let title;
-  try { const p = parseModule(text); title = p.meta.title || name.replace(/\.\w+$/, ""); }
+  if (/^\s*<(!doctype|html)/i.test(text)) { toast(name + " is a web page, not a module file."); return; }
+  try { const p = parseModule(text); title = p.meta.title || name.replace(/\.\w+$/, "");
+    if (!p.chapters.length && !p.preface.trim()) { toast(name + " has no chapters or scenes. Is it a module file?"); return; } }
   catch (e) { toast("Couldn't read " + name + ": " + e.message); return; }
   const key = "m-" + hashStr(title);
   lib.items[key] = { title, text, at: Date.now() };
@@ -569,7 +571,10 @@ document.addEventListener("click", async (ev) => {
     case "fwd": if (fwd.length) { back.push(view); view = fwd.pop(); render(); } return;
     case "libbtn": return go({ kind: "library" });
     case "peekx": peekId = null; renderPeek(); return renderSide();
-    case "demo": { const r = await fetch("demo.md?v=" + VERSION, { cache: "no-cache" }); return importText(await r.text(), "demo.md"); }
+    case "demo": {
+      try { const r = await fetch("demo.json?v=" + VERSION, { cache: "no-cache" }); const j = await r.json(); return importText(j.text, j.name); }
+      catch { return toast("Couldn't load the demo module."); }
+    }
     case "addfoe": addCombat("Foe " + (S.combat.length + 1), 10, null); return renderSide();
     case "clearcbt": if (!confirmInline(t, "Sure?")) return; S.combat = []; saveState(); return renderSide();
     case "resetst": if (!confirmInline(t, "Click again to wipe notes, flags, clocks, log")) return; S = blankState(); saveState(); return render();
