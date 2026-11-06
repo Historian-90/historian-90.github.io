@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.0.1";
+const VERSION = "1.1.0";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
@@ -13,6 +13,16 @@ const BOOKS = {
 };
 const chan = (() => { try { return new BroadcastChannel("agon-module"); } catch { return null; } })();
 const inOBR = OBR.isAvailable;
+const INIT_KEY = "rodeo.owlbear.initiative-tracker/metadata";
+const CARD_KEY = "com.agon/card";
+// Appendix 3 statuses: [name, boon|curse, resisting trait]
+const STATUSES = [["Regenerating", "boon", ""], ["Shielded", "boon", ""], ["Nimble", "boon", ""], ["Bleeding", "curse", "End"], ["Burning", "curse", "End"], ["Poisoned", "curse", "End"], ["Stunned", "curse", "End"], ["Frail", "curse", "End"], ["Slowed", "curse", "Str"], ["Bound", "curse", "Agi"], ["Prone", "curse", "Agi"], ["Blinded", "curse", "Per"], ["Deafened", "curse", "Per"], ["Silenced", "curse", "Pwr"], ["Charmed", "curse", "Wit"], ["Amnesia", "curse", "Rsn"], ["Doomed", "curse", "Int"]];
+const TRAIT = { agi: "agility", str: "strength", end: "endurance", per: "perception", wit: "wit", rsn: "reasoning", rea: "reasoning", int: "intuition", pwr: "power", pow: "power", cre: "creativity" };
+const traitKey = (s) => TRAIT[String(s).slice(0, 3).toLowerCase()] || null;
+const ELEMENTS = ["Fire", "Ice", "Water", "Earth", "Wind", "Lightning", "Metal", "Light", "Shadow"];
+const STRONG = { Fire: "Ice", Water: "Fire", Earth: "Lightning", Wind: "Earth", Lightning: "Metal", Ice: "Water", Metal: "Wind", Light: "Shadow" };
+let party = [];        // [{id, name, card}] from tokens linked to Agon sheets
+let lastVs = null;     // last resolved roll vs a target (shown in the side panel)
 
 /* ---------------- storage ---------------- */
 const LS = {
@@ -34,7 +44,7 @@ let peekId = null;
 let rolls = [];
 let curScene, routeIdx = 0;
 
-const blankState = () => ({ flags: {}, clocks: {}, notes: {}, combat: [], log: [], visited: {}, view: null, open: {} });
+const blankState = () => ({ flags: {}, clocks: {}, notes: {}, combat: [], log: [], visited: {}, view: null, open: {}, target: "" });
 const saveState = () => modKey && LS.set("agon-module:state:" + modKey, S);
 
 /* ---------------- helpers ---------------- */
@@ -302,6 +312,17 @@ async function fillMonster(el) {
     `<div class="mfoot"><button class="btn sm add" data-add="${e.id}">+ Add to combat${hp ? ` (${hp} HP)` : ""}</button>${d.book ? `<a class="book" target="_blank" rel="noopener" href="${BOOKS.historian}#${esc(d.book)}">Book ↗</a>` : ""}</div>`;
   if (!bm && d.book) el.querySelector(".mbody").insertAdjacentHTML("afterbegin", `<div class="err">Couldn't load “${esc(d.book)}” from the Historian's Handbook.</div>`);
   dice(el);
+  // Riders ("on a hit, the target is Stunned") borrow the creature's main attack roll.
+  const main = $$("button.die", el).find((b) => /^d20\+/.test(b.dataset.expr));
+  if (main) $$(".mbody > p", el).forEach((p) => {
+    if ($$("button.die", p).some((b) => /^d20\+/.test(b.dataset.expr))) return;
+    if (!/\bon a hit\b|\band (claw|bite|strike|gore|slam)s?\b/i.test(p.textContent)) return;
+    const b = document.createElement("button"); b.className = "die rider"; b.textContent = "⚔ resolve";
+    b.dataset.expr = main.dataset.expr; if (main.dataset.crit) b.dataset.crit = main.dataset.crit; b.dataset.rider = "1";
+    const act = p.querySelector("em")?.textContent.replace(/\.$/, "") || "Rider";
+    b.dataset.label = [e.title, act, "Hit"].join(" · "); b.title = `Uses ${main.closest("p")?.querySelector("em")?.textContent.replace(/\.$/, "") || "the main attack"}'s Hit and damage, plus this ability's effects`;
+    p.append(" ", b);
+  });
 }
 function tableRows(d) {
   const rows = (d.rows || []).map((r, i) => {
@@ -439,13 +460,15 @@ function renderSide() {
   side.innerHTML = `<nav class="tabs">${tabs.map(([k, l]) => `<button class="${k === tab ? "on" : ""}" data-tab="${k}">${l}</button>`).join("")}</nav><div class="sbody">${body}</div>`;
   const rq = $("#rq"); if (rq) { rq.oninput = () => { prefs.rq = rq.value; savePrefs(); const pos = rq.selectionStart; renderSide(); const n = $("#rq"); n.focus(); n.setSelectionRange(pos, pos); }; }
   if (tab === "tracker") dice(side);
+  refreshTargetBar();
 }
 function trackerHTML() {
   const clocks = Object.values(M.ent).filter((e) => e.type === "clock");
-  const combat = S.combat.map((c, i) => `<div class="cbt ${c.hp <= 0 ? "down" : ""}"><div class="cn"><input value="${esc(c.name)}" data-cname="${i}"><button class="x" data-crem="${i}" title="Remove">×</button></div>
-    <div class="ch"><button data-hp="${i}" data-d="-1">−</button><input class="amt" type="number" min="0" placeholder="amt" data-amt="${i}"><button data-hp="${i}" data-d="1">+</button><span class="hpv"><b>${c.hp}</b>/${c.max}</span>${c.ref ? `<a href="#" class="xref" data-ref="${c.ref}">stats</a>` : ""}</div>
+  const combat = S.combat.map((c, i) => `<div class="cbt ${c.hp <= 0 ? "down" : ""} ${S.target === "c:" + c.uid ? "tgt" : ""}"><div class="cn"><input value="${esc(c.name)}" data-cname="${i}"><button class="x" data-crem="${i}" title="Remove">×</button></div>
+    <div class="ch"><button data-hp="${i}" data-d="-1" title="Damage">−</button><input class="amt" type="number" min="0" placeholder="amt" data-amt="${i}"><button data-hp="${i}" data-d="1" title="Heal">+</button><span class="hpv"><b>${c.hp}</b>/${c.max}</span><label class="ev" title="Evasion">Ev<input type="number" value="${c.eva ?? 10}" data-ceva="${i}"></label>${c.ref ? `<a href="#" class="xref" data-ref="${c.ref}">stats</a>` : ""}</div>
+    <div class="ci"><button class="btn xs" data-init="${i}" title="Roll d20 + Agility modifier (${fmtMod(2 * (c.traits?.agility || 0))})">⚡ Init${c.init != null ? ` <b>${c.init}</b>` : ""}</button><button class="btn xs ${c.token ? "linked" : ""}" data-link="${i}" title="${c.token ? "Linked token. Click to unlink." : "Select a token on the map, then click to link it"}">${c.token ? "🔗 " + esc(c.tokenName || "token") : "🔗 Link token"}</button><button class="btn xs" data-tgt="${i}" title="Make this the target">🎯</button></div>
     <input class="cnote" placeholder="conditions, notes" value="${esc(c.note || "")}" data-cnote="${i}"></div>`).join("");
-  return `<div class="grp"><div class="gh">Combat <button class="btn xs" id="addfoe">+ custom</button>${S.combat.length ? '<button class="btn xs" id="clearcbt">clear</button>' : ""}</div>${combat || '<div class="empty">Use ⚔ Run on an encounter, or “Add to combat” on a stat block.</div>'}</div>
+  return `<div class="grp"><div class="gh">Combat <button class="btn xs" id="addfoe">+ custom</button>${S.combat.length ? '<button class="btn xs" id="initall" title="Roll initiative for every foe without one">⚡ all</button><button class="btn xs" id="clearcbt">clear</button>' : ""}</div>${combat || '<div class="empty">Use ⚔ Run on an encounter, or “Add to combat” on a stat block.</div>'}</div>
   <div class="grp"><div class="gh">Story flags</div>${M.flags.length ? M.flags.map((f) => flagBox(f.id, f.label)).join("") : '<div class="empty">This module has no flags.</div>'}</div>
   <div class="grp"><div class="gh">Clocks</div>${clocks.length ? clocks.map(renderClock).join("") : '<div class="empty">No clocks.</div>'}</div>
   <div class="grp"><div class="gh">Session log</div><form id="logf"><input id="logi" placeholder="Quick note, Enter to add"></form>${S.log.slice().reverse().map((l, i) => `<div class="logl"><time>${new Date(l.t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</time> ${esc(l.text)} <button class="x" data-lrem="${S.log.length - 1 - i}">×</button></div>`).join("")}</div>
@@ -456,7 +479,7 @@ function renderPeek() {
   if (!peekId || !M || !M.ent[peekId]) { p.classList.remove("on"); p.innerHTML = ""; return; }
   const e = M.ent[peekId];
   p.classList.add("on");
-  p.innerHTML = `<div class="peekbar"><span>${esc({ npc: "Cast", monster: "Bestiary", table: "Table", clock: "Clock" }[e.type])}</span>${e.scene ? `<a href="#" class="xref" data-ref="${e.scene}">in ${esc(M.scenes[e.scene]?.title || "")}</a>` : ""}<button class="x" id="peekx" title="Close">×</button></div><div class="peekbody">${e.type === "clock" ? renderClock(e) : renderEntity(e, false)}</div>`;
+  p.innerHTML = `<div class="peekbar"><span>${esc({ npc: "Cast", monster: "Bestiary", table: "Table", clock: "Clock" }[e.type])}</span>${e.scene ? `<a href="#" class="xref" data-ref="${e.scene}">in ${esc(M.scenes[e.scene]?.title || "")}</a>` : ""}<button class="x" id="peekx" title="Close">×</button></div>${e.type === "monster" ? targetBar() : ""}<div class="peekbody">${e.type === "clock" ? renderClock(e) : renderEntity(e, false)}</div>`;
   $$("[data-mon]", p).forEach(fillMonster);
   dice(p);
 }
@@ -492,6 +515,7 @@ function openModule(key) {
   try { parseModule(it.text); } catch (e) { toast("Module error: " + e.message); M = null; return; }
   modKey = key; lib.active = key; saveLib();
   S = Object.assign(blankState(), LS.get("agon-module:state:" + key, {}));
+  S.combat.forEach((c) => { c.uid ??= Math.random().toString(36).slice(2, 9); c.eva ??= 10; c.traits ??= {}; });
   back.length = 0; fwd.length = 0; peekId = null;
   view = S.view && (S.view.kind !== "scene" || M.scenes[S.view.id]) ? S.view : { kind: "overview" };
   if (view.kind === "library") view = { kind: "overview" };
@@ -523,13 +547,206 @@ function searchHTML(q) {
   return `<article class="scene"><h1>Search: “${esc(q)}”</h1>${hits.length ? hits.map((h) => `<div class="hit"><a href="#" class="xref" data-ref="${h.id}">${esc(h.title)}</a> <small>${h.kind}</small>${h.snip ? `<p class="nodice">…${hl(h.snip)}…</p>` : ""}</div>`).join("") : "<p>No matches.</p>"}</article>`;
 }
 
+/* ---------------- combat engine: targets, attacks, initiative ---------------- */
+const fmtMod = (n) => (n < 0 ? "−" : "+") + Math.abs(n);
+const stripTags = (h) => String(h ?? "").replace(/<[^>]+>/g, "").trim();
+function parseTraits(str) {
+  const out = {};
+  String(str || "").split(/[,;]/).forEach((part) => { const m = part.trim().match(/^([A-Za-z]+)\.?\s*(-?\d+)/); const k = m && traitKey(m[1]); if (k) out[k] = +m[2]; });
+  return out;
+}
+function monStats(e) {
+  const d = e.data; const bm = d.book && bookCache[d.book];
+  const book = (k) => { const s = bm?.stats.find((x) => x[0] === k); return s ? stripTags(s[1]) : null; };
+  const hp = parseInt(d.hp ?? book("HP")) || 10;
+  const eva = parseInt(d.evasion ?? book("Evasion")) || 10;
+  const traits = parseTraits(d.traits ?? book("Traits"));
+  const metaTxt = [d.element, d.kind, stripTags(bm?.meta)].join(" ");
+  const element = d.element || ELEMENTS.find((x) => new RegExp("\\b" + x + "\\b").test(metaTxt)) || null;
+  return { hp, eva, traits, element };
+}
+function getTarget() {
+  if (!S || !S.target) return null;
+  const [kind, id] = [S.target.slice(0, 1), S.target.slice(2)];
+  if (kind === "p") {
+    const p = party.find((x) => x.id === id); if (!p) return null; const c = p.card;
+    return { kind: "party", key: S.target, name: p.name, eva: +c.eva || 10, dodge: +c.dodge || 1, parry: +c.parry || 1, traits: c.traits || {}, hp: c.hp, max: c.hpMax, status: c.status || [], element: null };
+  }
+  const c = S.combat.find((x) => x.uid === id); if (!c) return null;
+  const tr = c.traits || {};
+  return { kind: "combat", key: S.target, uid: c.uid, name: c.name, eva: +c.eva || 10, dodge: Math.max(1, tr.agility || 0), parry: Math.max(1, tr.strength || 0), traits: tr, hp: c.hp, max: c.max, status: STATUSES.map((s) => s[0]).filter((n) => new RegExp("\\b" + n + "\\b", "i").test(c.note || "")), element: c.element };
+}
+function targetBar() {
+  const T = getTarget();
+  const opt = (v, l) => `<option value="${esc(v)}" ${S.target === v ? "selected" : ""}>${esc(l)}</option>`;
+  const pOpts = party.map((p) => opt("p:" + p.id, p.name + (p.card.kind === "aegis" ? " (Aegis)" : "") + ` · Ev ${p.card.eva}`)).join("");
+  const cOpts = S.combat.map((c) => opt("c:" + c.uid, `${c.name} · Ev ${c.eva ?? 10}${c.hp <= 0 ? " (down)" : ""}`)).join("");
+  const sum = T ? `Ev <b>${T.eva}</b> · Dodge ${fmtMod(T.dodge)} · Parry ${fmtMod(T.parry)} · HP ${T.hp ?? "?"}/${T.max ?? "?"}${T.element ? " · " + T.element : ""}${T.status.length ? " · " + T.status.join(", ") : ""}`
+    : (S.target ? "That target is gone (token removed or sheet unlinked)." : `Pick a target and every <b>Hit +N</b> below resolves against it.${inOBR && !party.length ? " Party members appear once their sheets are linked to tokens." : ""}`);
+  return `<div class="tbar"><label>🎯 Target <select id="tgt">${opt("", "None (plain rolls)")}${pOpts ? `<optgroup label="Party">${pOpts}</optgroup>` : ""}${cOpts ? `<optgroup label="Combat">${cOpts}</optgroup>` : ""}</select></label><div class="tsum">${sum}</div></div><div id="vs">${vsHTML()}</div>`;
+}
+function refreshTargetBar() { const tb = $("#peek .tbar"); if (tb) { tb.outerHTML = targetBar().replace(/<div id="vs">[\s\S]*$/, ""); } }
+
+function diceOf(expr) {
+  const clean = String(expr).replace(/[−–]/g, "-").replace(/\s+/g, "").toLowerCase();
+  const terms = []; let bonus = 0;
+  for (const t of clean.match(/[+\-]?[^+\-]+/g) || []) {
+    const sign = t[0] === "-" ? -1 : 1; const b = t.replace(/^[+\-]/, ""); const m = b.match(/^(\d*)d(\d+)$/);
+    if (m) terms.push({ n: +(m[1] || 1), f: +m[2], sign }); else if (/^\d+$/.test(b)) bonus += sign * +b;
+  }
+  return { terms, bonus };
+}
+function outcomeOf(total, nat, ev, crit) {
+  if (nat === 20) return "divine";
+  if (total >= ev) return nat >= crit ? "crit" : "hit";
+  return ev - total <= 4 ? "graze" : "miss";
+}
+const OUT = { divine: "Divine Strike", crit: "Critical Hit", hit: "Hit", graze: "Graze", miss: "Miss" };
+const fullHit = (o) => o === "hit" || o === "crit" || o === "divine";
+
+function resolveAttack(btn) {
+  const T = getTarget(); const p = btn.closest("p,li,td") || btn.parentElement;
+  const N = +(btn.dataset.expr.split("+")[1] || 0); const crit = +btn.dataset.crit || 20;
+  let hitBtn = btn, hitP = p;
+  if (btn.dataset.rider) { hitBtn = $$("button.die", btn.closest("[data-mon]")).find((b) => /^d20\+/.test(b.dataset.expr) && !b.dataset.rider) || btn; hitP = hitBtn.closest("p") || p; }
+  const dies = $$("button.die", hitP); const dmgBtn = dies.slice(dies.indexOf(hitBtn) + 1).find((b) => !/^d20\+/.test(b.dataset.expr));
+  const txt = p.textContent.replace("⚔ resolve", "") + (hitP !== p ? " " + hitP.textContent : ""); const act = (btn.dataset.label || "Attack").replace(/ · Hit$/, "");
+  const nat = rnd(20), total = nat + N, E = T.eva;
+  const out = outcomeOf(total, nat, E, crit);
+  // damage: roll 2× the dice once so Hit and Crit share the same faces
+  const dd = dmgBtn ? diceOf(dmgBtn.dataset.expr) : null;
+  const faces = dd ? dd.terms.map((t) => Array.from({ length: Math.min(t.n * 2, 200) }, () => rnd(t.f))) : [];
+  const elem = ELEMENTS.find((x) => new RegExp("\\b" + x + "\\b").test(txt.replace(dmgBtn?.textContent || "", ""))) || null;
+  let mult = 1, multNote = "";
+  if (T.kind === "combat" && T.element && elem) {
+    if (elem === "Shadow") multNote = "Shadow is neutral against creatures";
+    else if (STRONG[elem] === T.element) { mult = 1.5; multNote = `${elem} vs ${T.element}: ×1.5`; }
+    else if (STRONG[T.element] === elem && T.element !== "Shadow") { mult = 0.5; multNote = `${elem} vs ${T.element}: ×½`; }
+  }
+  const frail = T.status.includes("Frail");
+  const dmgFor = (o) => {
+    if (!dd || o === "miss") return { n: 0, how: "" };
+    if (o === "graze") return { n: Math.max(1, dd.bonus), how: `graze: bonus only` };
+    let sum = 0; const parts = [];
+    dd.terms.forEach((t, i) => {
+      if (o === "divine") { const v = t.n * t.f * 2; sum += t.sign * v; parts.push(`${t.n}d${t.f} max ×2 = ${v}`); }
+      else { const k = o === "crit" ? t.n * 2 : t.n; const f = faces[i].slice(0, k); sum += t.sign * f.reduce((a, b) => a + b, 0); parts.push(`${k}d${t.f}[${f.join(",")}]`); }
+    });
+    let n = sum + dd.bonus; let how = parts.join(" ") + (dd.bonus ? ` ${fmtMod(dd.bonus)}` : "");
+    if (mult !== 1) { n = Math.floor(n * mult); how += ` ×${mult === 1.5 ? "1.5" : "½"}`; }
+    if (frail) { n += 2; how += " +2 Frail"; }
+    return { n: Math.max(0, n), how };
+  };
+  const dmg = dmgFor(out);
+  // statuses named in this ability
+  const sts = STATUSES.filter(([nm]) => new RegExp("\\b" + nm + "\\b").test(txt)).map(([nm, kind, def]) => {
+    const m = txt.match(new RegExp(nm + "\\W{0,4}\\((\\w+)\\)")); const tk = traitKey(m ? m[1] : def);
+    const res = 10 + (tk ? (+T.traits[tk] || 0) : 0);
+    return { nm, kind, tk, res, ok: kind === "boon" ? fullHit(out) : fullHit(out) && total >= res };
+  });
+  const reacts = [];
+  if (out !== "divine" && out !== "miss") {
+    for (const [nm, b, note] of [["Dodge", T.dodge, ""], ["Parry", T.parry, "needs a melee weapon or shield"]]) {
+      const o2 = outcomeOf(total, nat, E + b, crit);
+      if (o2 !== out) reacts.push({ nm, b, o2, d: dmgFor(o2).n, note });
+      else reacts.push({ nm, b, o2, same: true, note });
+    }
+  }
+  lastVs = { act, tname: T.name, tkind: T.kind, uid: T.uid, nat, N, total, E, out, dmg, hasDmg: !!dd, multNote, sts, reacts, crit, at: Date.now() };
+  rolls.unshift({ label: `${act} → ${T.name}`, expr: btn.dataset.expr, total, detail: `${OUT[out]}${dd ? `, ${dmg.n} dmg` : ""} (d20[${nat}] ${fmtMod(N)} vs Ev ${E})`, nat, crit, at: Date.now() });
+  rolls = rolls.slice(0, 12); renderTray(true); showVs();
+}
+function resolveDamage(btn) {
+  const T = getTarget(); const r = rollExpr(btn.dataset.expr, `${btn.dataset.label || btn.dataset.expr} → ${T.name}`); if (!r) return;
+  lastVs = { act: btn.dataset.label || btn.dataset.expr, tname: T.name, tkind: T.kind, uid: T.uid, plain: true, total: r.total, detail: r.detail, at: Date.now() };
+  showVs();
+}
+function showVs() {
+  let box = $("#vs");
+  if (!box) { // the target's panel isn't open: show the result in the tray toast instead
+    toast(lastVs.plain ? `${lastVs.act} → ${lastVs.tname}: ${lastVs.total}` : `${lastVs.act} → ${lastVs.tname}: ${OUT[lastVs.out]}${lastVs.hasDmg ? `, ${lastVs.dmg.n} damage` : ""}`); return;
+  }
+  box.innerHTML = vsHTML(); box.scrollIntoView({ block: "nearest" });
+}
+function vsHTML() {
+  const v = lastVs; if (!v) return "";
+  const applyBtn = (amt, label, st) => v.tkind === "combat" && S.combat.find((c) => c.uid === v.uid) ? `<button class="btn xs" data-apply="${v.uid}" data-amt="${amt}"${st ? ` data-st="${esc(st)}"` : ""}>${label}</button>` : "";
+  if (v.plain) return `<div class="vs o-hit"><div class="vsh">${esc(v.act)} → <b>${esc(v.tname)}</b></div><div class="vsout"><b>${v.total}</b> <small>${esc(v.detail)}</small> ${applyBtn(v.total, "Apply as damage")} ${applyBtn(-v.total, "Apply as healing")}</div></div>`;
+  const tell = v.tkind === "party" ? ` <small>(tell ${esc(v.tname)})</small>` : "";
+  return `<div class="vs o-${v.out}">
+    <div class="vsh">${esc(v.act)} → <b>${esc(v.tname)}</b></div>
+    <div class="vsroll">d20 <b>${v.nat}</b> ${fmtMod(v.N)} = <b>${v.total}</b> vs Evasion ${v.E}${v.crit < 20 ? ` <small>(crit ${v.crit}+)</small>` : ""}</div>
+    <div class="vsout"><span class="badge">${OUT[v.out]}</span>${v.hasDmg ? (v.out === "miss" ? " no damage" : ` <b class="dmg">${v.dmg.n}</b> damage${tell} <small>${esc(v.dmg.how)}</small> ${applyBtn(v.dmg.n, "Apply " + v.dmg.n)}`) : ""}</div>
+    ${v.multNote ? `<div class="vsx">${esc(v.multNote)}</div>` : ""}
+    ${v.out === "divine" ? `<div class="vsx">Can't be dodged or parried.</div>` : ""}
+    ${v.sts.length ? `<ul class="vss">${v.sts.map((s) => `<li class="${s.ok ? "yes" : "no"}"><b>${s.nm}</b>${s.kind === "curse" ? ` (${s.tk ? s.tk.slice(0, 3).replace(/^./, (c) => c.toUpperCase()) : "?"})` : ""}: ${s.ok ? "applies" : "doesn't apply"} <small>${s.kind === "boon" ? "boon" : !fullHit(v.out) ? "needs a full Hit" : `${v.total} vs Resistance ${s.res}`}</small> ${s.ok ? applyBtn(0, "Mark", s.nm) : ""}</li>`).join("")}</ul>` : ""}
+    ${v.reacts.length ? `<div class="vsr">${v.reacts.map((r) => `<div>If they <b>${r.nm}</b> (${fmtMod(r.b)}): ${r.same ? `still a ${OUT[r.o2]}` : `<b>${OUT[r.o2]}</b>${v.hasDmg ? `, ${r.d} damage` : ""}${!fullHit(r.o2) && v.sts.some((s) => s.kind === "curse") ? ", no curse" : ""}`}${r.note ? ` <small>(${r.note})</small>` : ""}</div>`).join("")}</div>` : ""}
+  </div>`;
+}
+function applyToCombat(uid, amt, st) {
+  const c = S.combat.find((x) => x.uid === uid); if (!c) return;
+  if (st) { if (!new RegExp("\\b" + st + "\\b", "i").test(c.note || "")) c.note = [c.note, st].filter(Boolean).join(", "); toast(`${c.name}: ${st}`); }
+  else { c.hp = Math.max(0, Math.min(c.max + 999, c.hp - amt)); toast(amt >= 0 ? `${c.name} takes ${amt} (HP ${c.hp}/${c.max})` : `${c.name} heals ${-amt} (HP ${c.hp}/${c.max})`); }
+  saveState(); renderSide(); refreshTargetBar();
+}
+
+/* initiative + tokens (Owlbear only) */
+async function writeInit(c) {
+  if (!inOBR || !c.token || c.init == null) return;
+  try { await OBR.scene.items.updateItems([c.token], (items) => { for (const it of items) { const prev = it.metadata[INIT_KEY]; it.metadata[INIT_KEY] = { count: String(c.init), active: !!(prev && prev.active) }; } }); }
+  catch { toast(`Couldn't reach ${c.name}'s token. Re-link it.`); }
+}
+async function clearInit(list) {
+  const ids = list.filter((c) => c && c.token).map((c) => c.token); if (!inOBR || !ids.length) return;
+  try { await OBR.scene.items.updateItems(ids, (items) => { for (const it of items) delete it.metadata[INIT_KEY]; }); } catch {}
+}
+async function rollInit(i, quiet) {
+  const c = S.combat[i]; const mod = 2 * (c.traits?.agility || 0);
+  const r = rollExpr("d20" + (mod ? fmtMod(mod).replace("−", "-") : ""), `${c.name} · Initiative`); if (!r) return;
+  c.init = r.total; saveState();
+  if (inOBR && !c.token) { const n = await linkSelection([c], true); if (!n && !quiet) toast(`Initiative ${r.total}. Link a token to put it in the Initiative Tracker.`); }
+  await writeInit(c); if (!quiet) renderSide();
+}
+async function linkSelection(list, single) {
+  if (!inOBR || !list.length) return 0;
+  try {
+    const sel = (await OBR.player.getSelection()) || []; if (!sel.length || (single && sel.length !== 1)) return 0;
+    const items = await OBR.scene.items.getItems(sel); const used = new Set(S.combat.map((c) => c.token).filter(Boolean));
+    let n = 0;
+    for (const it of items) { if (used.has(it.id)) continue; const c = list[n]; if (!c) break; c.token = it.id; c.tokenName = it.name; n++; await writeInit(c); }
+    saveState(); return n;
+  } catch { return 0; }
+}
+async function linkToken(i) {
+  const c = S.combat[i];
+  if (!inOBR) return toast("Token linking works inside Owlbear.");
+  if (c.token) { await clearInit([c]); c.token = null; c.tokenName = null; saveState(); renderSide(); return toast(`${c.name} unlinked.`); }
+  const n = await linkSelection([c], true);
+  if (!n) return toast("Select exactly one (unlinked) token on the map first.");
+  renderSide(); toast(`${c.name} linked to “${c.tokenName}”.`);
+}
+async function watchParty() {
+  let unsub = null;
+  const upd = (items) => {
+    party = items.filter((i) => i.metadata && i.metadata[CARD_KEY]).map((i) => ({ id: i.id, name: i.metadata[CARD_KEY].name || i.name, card: i.metadata[CARD_KEY] }));
+    refreshTargetBar();
+  };
+  const start = async () => { upd(await OBR.scene.items.getItems()); unsub?.(); unsub = OBR.scene.items.onChange(upd); };
+  try { if (await OBR.scene.isReady()) await start(); } catch {}
+  OBR.scene.onReadyChange((ready) => { if (ready) start(); else { unsub?.(); unsub = null; party = []; refreshTargetBar(); } });
+}
+
 /* ---------------- events ---------------- */
 function openRef(id) {
   if (M.scenes[id]) { go({ kind: "scene", id }); return; }
   if (M.ent[id]) { peekId = id; renderPeek(); if (["cast", "bestiary", "tables"].includes(prefs.tab)) renderSide(); return; }
   toast("Nothing called “" + id + "” in this module.");
 }
-function addCombat(name, hp, ref) { S.combat.push({ name, hp, max: hp, ref, note: "" }); saveState(); }
+function addCombat(name, ref) {
+  const st = ref && M.ent[ref] ? monStats(M.ent[ref]) : { hp: 10, eva: 10, traits: {}, element: null };
+  const c = { uid: Math.random().toString(36).slice(2, 9), name, hp: st.hp, max: st.hp, eva: st.eva, traits: st.traits, element: st.element, ref, note: "" };
+  S.combat.push(c); saveState(); return c;
+}
 
 document.addEventListener("click", async (ev) => {
   const t = ev.target.closest("button,a,[data-seg]"); if (!t) return;
@@ -539,19 +756,30 @@ document.addEventListener("click", async (ev) => {
   if (ds.go === "overview") return go({ kind: "overview" });
   if (ds.tab) { prefs.tab = ds.tab; savePrefs(); return renderSide(); }
   if (ds.routego) return go({ kind: "scene", id: ds.scene, route: +ds.routego });
-  if (ds.expr) { const r = rollExpr(ds.expr, ds.label, { crit: +ds.crit || undefined }); return; }
+  if (ds.expr) {
+    if (S && S.target && getTarget()) {
+      if (/^d20\+/.test(ds.expr) && t.closest("[data-mon]")) return resolveAttack(t);
+      return resolveDamage(t);
+    }
+    rollExpr(ds.expr, ds.label, { crit: +ds.crit || undefined }); return;
+  }
+  if (ds.init != null) return rollInit(+ds.init);
+  if (ds.link != null) return linkToken(+ds.link);
+  if (ds.tgt != null) { S.target = "c:" + S.combat[+ds.tgt].uid; saveState(); renderSide(); renderPeek(); toast("Target: " + S.combat[+ds.tgt].name); return; }
+  if (ds.apply) { applyToCombat(ds.apply, +ds.amt, ds.st); return; }
   if (t.classList.contains("rollt")) return rollTable(ds.table);
   if (ds.run) {
-    const foes = JSON.parse(ds.run); let added = 0;
-    for (const f of foes) { const e = M.ent[f.id]; if (e?.data.book) await bookMonster(e.data.book); const hp = e ? monsterHP(e) : 0; for (let i = 1; i <= f.n; i++) { addCombat((e?.title || f.id) + (f.n > 1 ? " " + i : ""), hp, e ? f.id : null); added++; } }
-    prefs.tab = "tracker"; savePrefs(); renderSide(); toast(`Added ${added} to the combat tracker.`); return;
+    const foes = JSON.parse(ds.run); const made = [];
+    for (const f of foes) { const e = M.ent[f.id]; if (e?.data.book) await bookMonster(e.data.book); for (let i = 1; i <= f.n; i++) made.push(addCombat((e?.title || f.id) + (f.n > 1 ? " " + i : ""), e ? f.id : null)); }
+    const linked = await linkSelection(made);
+    prefs.tab = "tracker"; savePrefs(); renderSide(); toast(`Added ${made.length} to combat${linked ? `, linked ${linked} selected token${linked > 1 ? "s" : ""}` : ""}.`); return;
   }
-  if (ds.add) { const e = M.ent[ds.add]; const n = S.combat.filter((c) => c.ref === ds.add).length + 1; addCombat(e.title + " " + n, monsterHP(e), ds.add); prefs.tab = "tracker"; savePrefs(); renderSide(); return; }
+  if (ds.add) { const e = M.ent[ds.add]; const n = S.combat.filter((c) => c.ref === ds.add).length + 1; const c = addCombat(e.title + " " + n, ds.add); await linkSelection([c]); prefs.tab = "tracker"; savePrefs(); renderSide(); return; }
   if (ds.hp != null) {
     const i = +ds.hp; const amt = +($(`[data-amt="${i}"]`).value || 1); const c = S.combat[i];
     c.hp = Math.max(0, Math.min(c.max + 999, c.hp + amt * +ds.d)); saveState(); renderSide(); return;
   }
-  if (ds.crem != null) { S.combat.splice(+ds.crem, 1); saveState(); return renderSide(); }
+  if (ds.crem != null) { const [c] = S.combat.splice(+ds.crem, 1); clearInit([c]); if (S.target === "c:" + c.uid) S.target = ""; saveState(); renderPeek(); return renderSide(); }
   if (ds.lrem != null) { S.log.splice(+ds.lrem, 1); saveState(); return renderSide(); }
   if (ds.seg) {
     const id = t.closest("[data-clock]").dataset.clock; const v = +ds.seg;
@@ -575,8 +803,9 @@ document.addEventListener("click", async (ev) => {
       try { const r = await fetch("demo.json?v=" + VERSION, { cache: "no-cache" }); const j = await r.json(); return importText(j.text, j.name); }
       catch { return toast("Couldn't load the demo module."); }
     }
-    case "addfoe": addCombat("Foe " + (S.combat.length + 1), 10, null); return renderSide();
-    case "clearcbt": if (!confirmInline(t, "Sure?")) return; S.combat = []; saveState(); return renderSide();
+    case "addfoe": { const c = addCombat("Foe " + (S.combat.length + 1), null); await linkSelection([c]); return renderSide(); }
+    case "initall": for (let i = 0; i < S.combat.length; i++) if (S.combat[i].init == null && S.combat[i].hp > 0) await rollInit(i, true); return renderSide();
+    case "clearcbt": if (!confirmInline(t, "Sure?")) return; clearInit(S.combat); if (S.target.startsWith("c:")) S.target = ""; S.combat = []; lastVs = null; saveState(); renderPeek(); return renderSide();
     case "resetst": if (!confirmInline(t, "Click again to wipe notes, flags, clocks, log")) return; S = blankState(); saveState(); return render();
     case "theme": prefs.theme = { auto: "light", light: "dark", dark: "auto" }[prefs.theme]; savePrefs(); return applyTheme();
     case "size": prefs.size = prefs.size === "full" ? "compact" : "full"; savePrefs(); applySize(); return render();
@@ -597,6 +826,8 @@ document.addEventListener("input", (ev) => {
 });
 document.addEventListener("change", (ev) => {
   const t = ev.target;
+  if (t.id === "tgt") { S.target = t.value; saveState(); renderPeek(); renderSide(); return; }
+  if (t.dataset.ceva != null) { S.combat[+t.dataset.ceva].eva = +t.value || 0; saveState(); }
   if (t.dataset.flag) { S.flags[t.dataset.flag] = t.checked; saveState(); $$(`[data-flag="${t.dataset.flag}"]`).forEach((x) => x.checked = t.checked); }
   if (t.id === "file") readFiles(t.files);
 });
@@ -648,5 +879,10 @@ if (inOBR) {
     try { const th = await OBR.theme.getTheme(); obrMode = th.mode === "DARK" ? "dark" : "light"; OBR.theme.onChange((t) => { obrMode = t.mode === "DARK" ? "dark" : "light"; applyTheme(); }); } catch {}
     OBR.player.onChange((p) => { if (p.role !== "GM") lock(); });
     start();
+    watchParty();
   });
-} else start();
+} else {
+  // standalone test hook (no Owlbear): lets a test page inject party cards
+  if (/[?&]test\b/.test(location.search)) window.__agonTest = { setParty: (p) => { party = p; refreshTargetBar(); } };
+  start();
+}
