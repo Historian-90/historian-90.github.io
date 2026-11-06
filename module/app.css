@@ -289,3 +289,6 @@ button.die.rider { font: 600 11.5px var(--entry); padding: 0 5px; }
 .hrow .hd { color: var(--muted); }
 [data-size="compact"] .hrow { grid-template-columns: 64px 1fr 34px; }
 [data-size="compact"] .hrow em, [data-size="compact"] .hrow .hd { grid-column: 2 / -1; }
+.foes li.extra { color: var(--muted); }
+.pairs { margin-left: 6px; font: 11px var(--entry); text-transform: none; letter-spacing: 0; }
+.pairs select { font: 11px var(--entry); padding: 0 2px; border: 1px solid var(--hair); background: var(--paper); border-radius: 3px; }

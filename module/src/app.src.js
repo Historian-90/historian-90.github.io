@@ -4,7 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
 import { marked } from "marked";
 import * as yaml from "js-yaml";
 
-const VERSION = "1.2.1";
+const VERSION = "1.3.0";
 const POP = "com.agon.module/popover";
 const BOOKS = {
   player: "/books/player-handbook/index.html",
@@ -173,6 +173,7 @@ function parseModule(src) {
   }
   register(M.preface, M.ent, { scene: null });
   for (const c of M.chapters) { register(c.body, M.ent, { scene: c.id }); for (const sc of c.scenes) register(sc.body, M.ent, { scene: sc.id }); }
+  M.dupes = Object.keys(M.ent).filter((id) => M.scenes[id]);
   return M;
 }
 
@@ -207,7 +208,9 @@ function renderBlock(b) {
     return `<details class="route" data-route="${r.n ?? ""}"><summary><span class="lbl">Off script</span> ${mdInline(b.args || "If the players go another way")}</summary><div class="rbody">${md(b.body)}</div></details>`;
   }
   if (T === "glance") {
-    const d = loadYaml(b.body, "glance"); if (d.__error) return errBox(d);
+    // Line-based: "Key: everything after the first colon", so values may contain colons.
+    const d = {};
+    for (const ln of b.body.split("\n")) { const m = ln.match(/^\s*([^:]+?)\s*:\s*(.*)$/); if (m) d[m[1]] = m[2].replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1"); }
     return `<div class="glance">${Object.entries(d).map(([k, v]) => `<div><b>${esc(k)}</b><span>${mdInline(Array.isArray(v) ? v.join(" · ") : v)}</span></div>`).join("")}</div>`;
   }
   if (T === "check") return renderCheck(b);
@@ -239,12 +242,12 @@ function renderCheck(b) {
 function parseFoe(s) {
   if (typeof s === "object") { const [id, n] = Object.entries(s)[0]; return { id: id.toLowerCase(), n: +n || 1 }; }
   const m = String(s).match(/^\s*(?:(\d+)\s*[x×]\s*)?([\w-]+)(?:\s*[x×]\s*(\d+))?/i);
-  return m ? { id: m[2].toLowerCase(), n: +(m[1] || m[3] || 1) } : null;
+  return m ? { id: m[2].toLowerCase(), n: +(m[1] || m[3] || 1), extra: /4th pair/i.test(String(s)) } : null;
 }
 function renderEncounter(b) {
   const d = loadYaml(b.body, "encounter"); if (d.__error) return errBox(d);
   const foes = (d.foes || []).map(parseFoe).filter(Boolean);
-  const fl = foes.map((f) => `<li><b>${f.n} ×</b> ${wiki(`[[${f.id}]]`)}</li>`).join("");
+  const fl = foes.map((f) => `<li class="${f.extra ? "extra" : ""}"><b>${f.n} ×</b> ${wiki(`[[${f.id}]]`)}${f.extra ? ' <small>(4th pair)</small>' : ""}</li>`).join("");
   const enc = esc(JSON.stringify(foes));
   const rest = ["threat", "terrain", "setup", "tactics", "morale", "scaling", "reward"].filter((k) => d[k])
     .map((k) => `<div><b>${k[0].toUpperCase() + k.slice(1)}</b><span>${mdInline(d[k])}</span></div>`).join("");
@@ -285,11 +288,11 @@ function renderEntity(e, inline) {
     const rows = [["Role", d.role], ["Look", d.look], ["Voice", d.voice], ["Wants", d.wants], ["Fears", d.fears], ["Leverage", d.leverage], ["Attitude", d.attitude]]
       .filter((r) => r[1]).map(([k, v]) => `<div><b>${k}</b><span>${mdInline(v)}</span></div>`).join("");
     const list = (k, l) => d[k] ? `<h5>${l}</h5><ul>${[].concat(d[k]).map((x) => `<li>${mdInline(x)}</li>`).join("")}</ul>` : "";
-    return `<div class="card npc"><div class="cardh"><span class="lbl">NPC</span><h4>${esc(e.title)}</h4>${d.quote ? `<q>${mdInline(d.quote)}</q>` : ""}</div>${inline ? `<button class="btn sm open" data-ref="${e.id}">Open card</button>` : `<div class="glance">${rows}</div>${list("knows", "Knows")}${list("lies", "Will lie about")}${list("lines", "Lines")}${d.secret ? `<aside class="secret"><div class="lbl">🔒 Secret</div>${md(d.secret)}</aside>` : ""}${d.stats ? `<h5>In a fight</h5><p>${mdInline(d.stats)}</p>` : ""}${d.notes ? md(d.notes) : ""}`}</div>`;
+    return `<div class="card npc"><div class="cardh"><span class="lbl">NPC</span><h4>${esc(e.title)}</h4>${d.quote ? `<q>${mdInline(d.quote)}</q>` : ""}</div>${inline ? `<button class="btn sm open" data-ent="${e.id}">Open card</button>` : `<div class="glance">${rows}</div>${list("knows", "Knows")}${list("lies", "Will lie about")}${list("lines", "Lines")}${d.secret ? `<aside class="secret"><div class="lbl">🔒 Secret</div>${md(d.secret)}</aside>` : ""}${d.stats ? `<h5>In a fight</h5><p>${mdInline(d.stats)}</p>` : ""}${d.notes ? md(d.notes) : ""}`}</div>`;
   }
   if (e.type === "monster") {
     const head = `<div class="cardh"><span class="lbl">Stat block</span><h4>${esc(e.title)}</h4></div>`;
-    if (inline) return `<div class="card monster">${head}<button class="btn sm open" data-ref="${e.id}">Open stat block</button></div>`;
+    if (inline) return `<div class="card monster">${head}<button class="btn sm open" data-ent="${e.id}">Open stat block</button></div>`;
     return `<div class="card monster" data-mon="${e.id}">${head}<div class="mbody">Loading…</div></div>`;
   }
   if (e.type === "table") {
@@ -417,6 +420,7 @@ function renderMain() {
       <div class="crumb">Module ${esc(m.module ?? "")}</div>
       <h1>${esc(m.title || "Untitled module")}</h1>${m.subtitle ? `<p class="sub">${esc(m.subtitle)}</p>` : ""}
       ${facts.length ? `<div class="glance">${facts.map(([k, v]) => `<div><b>${k}</b><span>${esc(v)}</span></div>`).join("")}</div>` : ""}
+      ${M.dupes.length ? `<div class="err">These ids are used by both a scene and a card, so [[links]] to them open the card: ${M.dupes.map(esc).join(", ")}. Give the scenes different ids.</div>` : ""}
       ${m.summary ? `<p class="lead">${mdInline(m.summary)}</p>` : ""}
       ${(curScene = null, routeIdx = 0, "")}${renderMd(M.preface)}${(curScene = undefined, "")}
       <h2>Contents</h2>
@@ -458,9 +462,9 @@ function renderSide() {
     const list = Object.values(M.ent).filter((e) => e.type === type);
     if (tab === "tables") {
       const by = {}; list.forEach((e) => (by[e.data.kind || "Other"] ??= []).push(e));
-      body = Object.entries(by).map(([k, es]) => `<div class="grp"><div class="gh">${esc(k)}</div>${es.map((e) => `<a href="#" class="item ${peekId === e.id ? "cur" : ""}" data-ref="${e.id}">${esc(e.title)}</a>`).join("")}</div>`).join("");
+      body = Object.entries(by).map(([k, es]) => `<div class="grp"><div class="gh">${esc(k)}</div>${es.map((e) => `<a href="#" class="item ${peekId === e.id ? "cur" : ""}" data-ent="${e.id}">${esc(e.title)}</a>`).join("")}</div>`).join("");
     } else {
-      body = list.map((e) => `<a href="#" class="item ${peekId === e.id ? "cur" : ""}" data-ref="${e.id}">${esc(e.title)}<small>${esc(type === "npc" ? (e.data.role || "") : [e.data.threat, e.data.level != null ? "L" + e.data.level : ""].filter(Boolean).join(" · ") || (e.data.book ? "from the book" : ""))}</small></a>`).join("");
+      body = list.map((e) => `<a href="#" class="item ${peekId === e.id ? "cur" : ""}" data-ent="${e.id}">${esc(e.title)}<small>${esc(type === "npc" ? (e.data.role || "") : [e.data.threat, e.data.level != null ? "L" + e.data.level : ""].filter(Boolean).join(" · ") || (e.data.book ? "from the book" : ""))}</small></a>`).join("");
     }
     if (!list.length) body = `<div class="empty">None in this module yet.</div>`;
   } else if (tab === "tracker") body = trackerHTML();
@@ -473,9 +477,9 @@ function trackerHTML() {
   const clocks = Object.values(M.ent).filter((e) => e.type === "clock");
   const combat = S.combat.map((c, i) => `<div class="cbt ${c.hp <= 0 ? "down" : ""} ${S.target === "c:" + c.uid ? "tgt" : ""}"><div class="cn"><input value="${esc(c.name)}" data-cname="${i}"><button class="x" data-crem="${i}" title="Remove">×</button></div>
     <div class="ch"><button data-hp="${i}" data-d="-1" title="Damage">−</button><input class="amt" type="number" min="0" placeholder="amt" data-amt="${i}"><button data-hp="${i}" data-d="1" title="Heal">+</button><span class="hpv"><b>${c.hp}</b>/${c.max}</span><label class="ev ${c.evaOverride != null ? "ovr" : ""}" title="${c.evaOverride != null ? `Evasion (your override; the stat block says ${cStats(c).base}). Clear the box to go back.` : "Evasion, from the stat block. Type a number to override."}">Ev<input type="number" value="${cStats(c).eva}" data-ceva="${i}"></label></div>
-    <div class="ci"><button class="btn xs" data-init="${i}" title="Roll d20 + Agility modifier (${fmtMod(2 * (cStats(c).traits.agility || 0))})">⚡ Init${c.init != null ? ` <b>${c.init}</b>` : ""}</button><button class="btn xs ${c.token ? "linked" : ""}" data-link="${i}" title="${c.token ? "Linked token. Click to unlink." : "Select a token on the map, then click to link it"}">${c.token ? "🔗 " + esc(c.tokenName || "token") : "🔗 Link token"}</button><button class="btn xs" data-tgt="${i}" title="Make this the target">🎯</button>${c.ref ? `<a href="#" class="xref" data-ref="${c.ref}">stats</a>` : ""}</div>
+    <div class="ci"><button class="btn xs" data-init="${i}" title="Roll d20 + Agility modifier (${fmtMod(2 * (cStats(c).traits.agility || 0))})">⚡ Init${c.init != null ? ` <b>${c.init}</b>` : ""}</button><button class="btn xs ${c.token ? "linked" : ""}" data-link="${i}" title="${c.token ? "Linked token. Click to unlink." : "Select a token on the map, then click to link it"}">${c.token ? "🔗 " + esc(c.tokenName || "token") : "🔗 Link token"}</button><button class="btn xs" data-tgt="${i}" title="Make this the target">🎯</button>${c.ref ? `<a href="#" class="xref" data-ent="${c.ref}">stats</a>` : ""}</div>
     <input class="cnote" placeholder="conditions, notes" value="${esc(c.note || "")}" data-cnote="${i}"></div>`).join("");
-  return `<div class="grp"><div class="gh">Combat <button class="btn xs" id="addfoe">+ custom</button>${S.combat.length ? '<button class="btn xs" id="initall" title="Roll initiative for every foe without one">⚡ all</button><button class="btn xs" id="clearcbt">clear</button>' : ""}</div>${combat || '<div class="empty">Use ⚔ Run on an encounter, or “Add to combat” on a stat block.</div>'}</div>
+  return `<div class="grp"><div class="gh">Combat <label class="pairs" title="Party size: ⚔ Run skips foes marked (4th pair) below 4 pairs">pairs <select id="pairs">${[2, 3, 4].map((n) => `<option ${(S.pairs || 4) === n ? "selected" : ""}>${n}</option>`).join("")}</select></label><button class="btn xs" id="addfoe">+ custom</button>${S.combat.length ? '<button class="btn xs" id="initall" title="Roll initiative for every foe without one">⚡ all</button><button class="btn xs" id="clearcbt">clear</button>' : ""}</div>${combat || '<div class="empty">Use ⚔ Run on an encounter, or “Add to combat” on a stat block.</div>'}</div>
   <div class="grp"><div class="gh">Story flags</div>${M.flags.length ? M.flags.map((f) => flagBox(f.id, f.label)).join("") : '<div class="empty">This module has no flags.</div>'}</div>
   <div class="grp"><div class="gh">Clocks</div>${clocks.length ? clocks.map(renderClock).join("") : '<div class="empty">No clocks.</div>'}</div>
   <div class="grp"><div class="gh">Session log</div><form id="logf"><input id="logi" placeholder="Quick note, Enter to add"></form>${S.log.slice().reverse().map((l, i) => `<div class="logl"><time>${new Date(l.t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</time> ${esc(l.text)} <button class="x" data-lrem="${S.log.length - 1 - i}">×</button></div>`).join("")}</div>
@@ -776,8 +780,8 @@ async function watchParty() {
 
 /* ---------------- events ---------------- */
 function openRef(id) {
-  if (M.scenes[id]) { go({ kind: "scene", id }); return; }
   if (M.ent[id]) { setPeek(id); if (["cast", "bestiary", "tables"].includes(prefs.tab)) renderSide(); return; }
+  if (M.scenes[id]) { go({ kind: "scene", id }); return; }
   toast("Nothing called “" + id + "” in this module.");
 }
 function addCombat(name, ref) {
@@ -790,6 +794,7 @@ document.addEventListener("click", async (ev) => {
   const t = ev.target.closest("button,a,[data-seg]"); if (!t) return;
   const ds = t.dataset;
   if (t.tagName === "A" && (t.getAttribute("href") === "#")) ev.preventDefault();
+  if (ds.ent) { if (M.ent[ds.ent]) { setPeek(ds.ent); if (["cast", "bestiary", "tables"].includes(prefs.tab)) renderSide(); } return; }
   if (ds.ref) return openRef(ds.ref);
   if (ds.go === "overview") return go({ kind: "overview" });
   if (ds.tab) { prefs.tab = ds.tab; savePrefs(); return renderSide(); }
@@ -807,7 +812,7 @@ document.addEventListener("click", async (ev) => {
   if (ds.apply) { applyToCombat(ds.apply, +ds.amt, ds.st); return; }
   if (t.classList.contains("rollt")) return rollTable(ds.table);
   if (ds.run) {
-    const foes = JSON.parse(ds.run); const made = [];
+    const all = JSON.parse(ds.run); const pairs = S.pairs || 4; const foes = all.filter((f) => !f.extra || pairs >= 4); const made = [];
     for (const f of foes) { const e = M.ent[f.id]; if (e?.data.book) await bookMonster(e.data.book); for (let i = 1; i <= f.n; i++) made.push(addCombat((e?.title || f.id) + (f.n > 1 ? " " + i : ""), e ? f.id : null)); }
     const linked = await linkSelection(made);
     prefs.tab = "tracker"; savePrefs(); renderSide(); toast(`Added ${made.length} to combat${linked ? `, linked ${linked} selected token${linked > 1 ? "s" : ""}` : ""}.`); return;
@@ -868,6 +873,7 @@ document.addEventListener("input", (ev) => {
 });
 document.addEventListener("change", (ev) => {
   const t = ev.target;
+  if (t.id === "pairs") { S.pairs = +t.value; saveState(); toast(`Party size: ${S.pairs} pairs`); return; }
   if (t.id === "tgt") { S.target = t.value; saveState(); renderPeek(); renderSide(); return; }
   if (t.dataset.ceva != null) {
     const c = S.combat[+t.dataset.ceva]; const base = cStats(c).base;
