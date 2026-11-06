@@ -1,0 +1,9 @@
+{
+  "name": "Agon Module",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "author": "CJ",
+  "description": "The Historian's adventure module reader. Only the GM gets a button; module text is stored in the GM's own browser and never sent to the room.",
+  "icon": "/module/icon.svg",
+  "background_url": "/module/background.html?v=1.0.0"
+}

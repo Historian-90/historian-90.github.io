@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-size="full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Agon Module — Historian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css?v=1.0.0">
+</head>
+<body>
+<header id="top">
+  <button id="sidebtn" class="ib" title="Contents">☰</button>
+  <div class="brand"><span class="mark">Historian</span><span id="title">Agon Module</span></div>
+  <button id="back" class="ib" title="Back" disabled>‹</button><button id="fwd" class="ib" title="Forward" disabled>›</button>
+  <form id="searchf"><input id="q" type="search" placeholder="Search module  ( / )" autocomplete="off"></form>
+  <button id="libbtn" class="btn sm">Library</button>
+  <button id="theme" class="btn sm">◐ Auto</button>
+  <button id="size" class="btn sm">⇲ Compact</button>
+  <button id="close" class="ib" title="Close" hidden>×</button>
+</header>
+<div id="wrap">
+  <aside id="side"></aside>
+  <main id="main"></main>
+  <aside id="peek"></aside>
+</div>
+<footer id="tray">
+  <form id="dicef"><input id="dicei" placeholder="2d6+3" autocomplete="off"><button class="btn sm">Roll</button></form>
+  <div id="rolls"></div>
+</footer>
+<div id="toast"></div>
+<script src="app.js?v=1.0.0"></script>
+</body>
+</html>
